@@ -17,5 +17,4 @@ ns1              IN      A      172.21.5.72
 ; -- add dns records below
 
 srv-consul-01      IN      A      172.21.5.152 
-
-
+registry           IN      A      172.21.5.71
