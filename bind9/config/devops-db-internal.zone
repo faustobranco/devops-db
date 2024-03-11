@@ -1,0 +1,21 @@
+$TTL 2d
+
+$ORIGIN devops-db.internal.
+
+@               IN      SOA     ns1.devops-db.internal. admin.devops-db.internal. (
+                                2022122800      ; serial
+                                12h             ; refresh
+                                15m             ; retry
+                                3w              ; expire
+                                2h              ; minimum ttl
+                                )
+
+                IN      NS      ns1.devops-db.internal.
+
+ns1              IN      A      172.21.5.72
+
+; -- add dns records below
+
+srv-consul-01      IN      A      172.21.5.152 
+
+
