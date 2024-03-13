@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  srv-registry-01:
+    container_name: srv-registry-01
+    image: registry:2
+    ports:
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+    volumes:
+      - /work/registry:/var/lib/registry
+    restart: unless-stopped
+    networks:
+      - registry_bridge
+networks:
+  registry_bridge:
+    name: registry_bridge
+    driver: bridge
