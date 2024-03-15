@@ -11,7 +11,8 @@ $ORIGIN devops-db.com.
                                 )
 
                  IN      NS     ns1.devops-db.com.
-                 IN      NS     1.1.1.1
+*                IN      NS     1.1.1.1
+@                IN      NS     1.1.1.1
 ns1              IN      A      172.21.5.72
 
 ; -- add dns records below
