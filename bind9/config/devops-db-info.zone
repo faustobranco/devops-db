@@ -1,8 +1,8 @@
 $TTL 2d
 
-$ORIGIN devops-db.internal.
+$ORIGIN devops-db.info.
 
-@               IN      SOA     ns1.devops-db.internal. admin.devops-db.internal. (
+@               IN      SOA     ns1.devops-db.info. admin.devops-db.info. (
                                 2022122800      ; serial
                                 12h             ; refresh
                                 15m             ; retry
@@ -10,7 +10,7 @@ $ORIGIN devops-db.internal.
                                 2h              ; minimum ttl
                                 )
 
-                IN      NS      ns1.devops-db.internal.
+                IN      NS      ns1.devops-db.info.
 
 ns1              IN      A      172.21.5.72
 
