@@ -1,0 +1,35 @@
+schema-version: 1
+product-type: DNSManagement
+DNSManagement:
+   internal_acl:
+      - '172.21.5.0/24'
+      - '172.25.1.0/24'
+   options:
+      forwarders:
+         - '1.1.1.1'
+         - '8.8.8.8'
+   dns:
+      - lab.devops-db.info:
+        - nameservers:
+           - name: '@'
+             ip: '1.1.1.1'
+             soa: 'NS'
+           - name: '*'
+             ip: '1.1.1.1'
+             soa: 'NS'
+           - name: 'ns1'
+             ip: '172.21.5.72'
+             soa: 'NS'
+        - records:
+           - name: 'srv-consul-01'
+             ip: '172.21.5.152'
+             soa: 'A'
+           - name: 'gitlab'
+             ip: '172.21.5.153'
+             soa: 'A'
+           - name: 'registry'
+             ip: '172.21.5.75'
+             soa: 'A'
+           - name: 'jenkins'
+             ip: '172.21.5.70'
+             soa: 'A'

@@ -4,6 +4,8 @@ services:
   srv-registry-01:
     container_name: srv-registry-01
     image: registry:2
+    environment:
+      - REGISTRY_STORAGE_DELETE_ENABLED=true
     ports:
       - "5000:5000/tcp"
       - "5000:5000/udp"

@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:3.19
 
 RUN set -e && \
   apk update && \

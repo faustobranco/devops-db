@@ -1,0 +1,35 @@
+schema-version: 1
+product-type: DockerImage
+dockerfile:
+  - environment: dev
+    name: alpine_python
+    version: 3.19
+    architecture:
+        - linux/arm64
+        - linux/amd64
+    registry:
+      registry: LocalRegistry
+      repository: registry.devops-db.internal
+      port: 5000
+    manifest:
+      name: alpine_python
+      version: 3.19
+      architecture:
+        - linux/arm64
+        - linux/amd64
+  - environment: prd
+    name: alpine_python
+    version: 3.19
+    architecture:
+        - linux/arm64
+        - linux/amd64
+    registry:
+      registry: LocalRegistry
+      repository: registry.lab.devops-db.info
+      port: 5000
+    manifest:
+      name: alpine_python
+      version: 3.19
+      architecture:
+        - linux/arm64
+        - linux/amd64        
