@@ -1,8 +1,0 @@
-#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
-#Fri Mar 22 14:31:52 WET 2024
-cassandra-ldap-4.0.7-1.1.0-sources.jar>=
-cassandra-ldap-4.0.7-1.1.0.pom>=
-cassandra-ldap-4.0.7-1.1.0-rpm.rpm>=
-cassandra-ldap-4.0.7-1.1.0.jar>=
-cassandra-ldap-4.0.7-1.1.0.deb>=
-cassandra-ldap-4.0.7-1.1.0-javadoc.jar>=
