@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  srv-ldapmanager-01:
+    container_name: srv-ldapmanager-01
+    image: ghcr.io/ldapaccountmanager/lam:stable
+    ports:
+      - "8082:80/tcp"
+    restart: unless-stopped
+    networks:
+      - ldap_bridge
+networks:
+  ldap_bridge:
+    name: ldap_bridge
+    driver: bridge
