@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  srv-ldap-01:
+    container_name: srv-ldap-01
+    image: osixia/openldap:latest
+    environment:
+      - LDAP_ORGANISATION="DevOps DB"
+      - LDAP_DOMAIN="devops-db.info"
+      - LDAP_ADMIN_PASSWORD="JbBmKx#lK@ZX4*amqd5l"
+      - LDAP_BASE_DN="dc=devops-db,dc=info"
+      - LDAP_TLS_CRT_FILENAME=devops-db_info.crt
+      - LDAP_TLS_KEY_FILENAME=devops-db_info.key
+      - LDAP_TLS_CA_CRT_FILENAME=devops-db_info.ca-bundle
+      - DISABLE_CHOWN=true
+    ports:
+      - "389:389/tcp"
+      - "636:636/tcp"
+    volumes:
+      - /work/openldap/data/slapd/database:/var/lib/ldap 
+      - /work/openldap/data/slapd/config:/etc/ldap/slapd.d 
+      - /work/Certs/devops-db_info:/container/service/slapd/assets/certs 
+    restart: unless-stopped
+    networks:
+      - ldap_bridge
+networks:
+  ldap_bridge:
+    name: ldap_bridge
+    driver: bridge
