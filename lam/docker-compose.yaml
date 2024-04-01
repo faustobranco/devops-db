@@ -3,7 +3,10 @@ version: "3"
 services:
   srv-ldapmanager-01:
     container_name: srv-ldapmanager-01
+    hostname: ldapman.devops-db.internal
     image: ghcr.io/ldapaccountmanager/lam:stable
+    environment:
+      - VIRTUAL_HOST=ldapman.devops-db.internal
     ports:
       - "8082:80/tcp"
     restart: unless-stopped

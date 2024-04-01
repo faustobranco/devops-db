@@ -15,4 +15,4 @@ ns1              IN      A      172.21.5.72
 
 ; -- add dns records below
 
-ldap                 IN      A      172.21.5.76
+ldap                 IN      A      172.21.5.70

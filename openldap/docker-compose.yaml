@@ -3,6 +3,7 @@ version: "3"
 services:
   srv-ldap-01:
     container_name: srv-ldap-01
+    hostname: srv-ldap-01
     image: osixia/openldap:latest
     environment:
       - LDAP_ORGANISATION="DevOps DB"
@@ -17,9 +18,9 @@ services:
       - "389:389/tcp"
       - "636:636/tcp"
     volumes:
-      - /work/openldap/data/slapd/database:/var/lib/ldap 
-      - /work/openldap/data/slapd/config:/etc/ldap/slapd.d 
-      - /work/Certs/devops-db_info:/container/service/slapd/assets/certs 
+      - /Users/fausto.branco/OneDrive/Work/OpenLdap/data/slapd/database:/var/lib/ldap 
+      - /Users/fausto.branco/OneDrive/Work/OpenLdap/data/slapd/config:/etc/ldap/slapd.d 
+      - /Users/fausto.branco/OneDrive/Work/Certs/devops-db_info:/container/service/slapd/assets/certs 
     restart: unless-stopped
     networks:
       - ldap_bridge
