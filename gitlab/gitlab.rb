@@ -14,5 +14,6 @@ gitlab_rails['ldap_servers'] = {
   'retry_empty_result_with_codes' => [80],
   'allow_username_or_email_login' => false,
   'base' => 'ou=UserGroups,dc=devops-db,dc=info',
+  'user_filter' => '(&(objectClass=person)(memberOf=cn=GitLabGroup,ou=SecurityGroups,dc=devops-db,dc=info))'
   }
 }

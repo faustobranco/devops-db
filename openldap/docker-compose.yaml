@@ -4,23 +4,20 @@ services:
   srv-ldap-01:
     container_name: srv-ldap-01
     hostname: srv-ldap-01
-    image: osixia/openldap:latest
+    image: bitnami/openldap:2.5.17
     environment:
-      - LDAP_ORGANISATION="DevOps DB"
-      - LDAP_DOMAIN="devops-db.info"
-      - LDAP_ADMIN_PASSWORD="JbBmKx#lK@ZX4*amqd5l"
-      - LDAP_BASE_DN="dc=devops-db,dc=info"
-      - LDAP_TLS_CRT_FILENAME=devops-db_info.crt
-      - LDAP_TLS_KEY_FILENAME=devops-db_info.key
-      - LDAP_TLS_CA_CRT_FILENAME=devops-db_info.ca-bundle
-      - DISABLE_CHOWN=true
+      - LDAP_ADMIN_USERNAME=admin 
+      - LDAP_PORT_NUMBER=389 
+      - LDAP_ADMIN_PASSWORD='JbBmKx#lK@ZX4*amqd5l' 
+      - LDAP_ROOT=dc=devops-db,dc=info 
+      - LDAP_ADMIN_DN=CN=admin,DC=devops-db,DC=info 
+      - LDAP_EXTRA_SCHEMAS=cosine,inetorgperson,nis,memberof 
     ports:
       - "389:389/tcp"
       - "636:636/tcp"
     volumes:
-      - /Users/fausto.branco/OneDrive/Work/OpenLdap/data/slapd/database:/var/lib/ldap 
-      - /Users/fausto.branco/OneDrive/Work/OpenLdap/data/slapd/config:/etc/ldap/slapd.d 
-      - /Users/fausto.branco/OneDrive/Work/Certs/devops-db_info:/container/service/slapd/assets/certs 
+      - /work/ldap/memberof.ldif:/bitnami/openldap/memberof.ldif
+      - /work/ldap/memberof.ldif:/opt/bitnami/openldap/etc/schema/memberof.ldif
     restart: unless-stopped
     networks:
       - ldap_bridge
