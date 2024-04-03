@@ -40,6 +40,6 @@ userpassword: XXXXXXXXXXXXXXXXX
 
 ## Group MemberOf
 dn: cn=GitLabGroup,ou=SecurityGroups,dc=devops-db,dc=info
-cn: readers
+cn: GitLabGroup
 member: cn=Fausto Branco,ou=UserGroups,dc=devops-db,dc=info
 objectclass: groupOfNames

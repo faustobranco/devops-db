@@ -1,0 +1,4 @@
+dn: cn=JenkinsGroup,ou=SecurityGroups,dc=devops-db,dc=info
+cn: JenkinsGroup
+member: cn=Fausto Branco,ou=UserGroups,dc=devops-db,dc=info
+objectclass: groupOfNames
