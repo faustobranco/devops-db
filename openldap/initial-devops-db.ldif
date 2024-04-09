@@ -1,29 +1,28 @@
 ## OUs
-dn: ou=AdminGroups,dc=devops-db,dc=info
+dn: ou=AdminGroups,dc=ldap,dc=devops-db,dc=info
 objectclass: organizationalUnit
 ou: AdminGroups
 
-dn: ou=SecurityGroups,dc=devops-db,dc=info
+dn: ou=SecurityGroups,dc=ldap,dc=devops-db,dc=info
 objectclass: organizationalUnit
 ou: SecurityGroups
 
-dn: ou=ServiceGroups,dc=devops-db,dc=info
+dn: ou=ServiceGroups,dc=ldap,dc=devops-db,dc=info
 objectclass: organizationalUnit
 ou: ServiceGroups
 
-dn: ou=UserGroups,dc=devops-db,dc=info
+dn: ou=UserGroups,dc=ldap,dc=devops-db,dc=info
 objectclass: organizationalUnit
 ou: UserGroups
 
 ## Default human User Group
-dn: cn=AllUsers,ou=SecurityGroups,dc=devops-db,dc=info
+dn: cn=AllUsers,ou=SecurityGroups,dc=ldap,dc=devops-db,dc=info
 cn: AllUsers
 gidnumber: 10000
 objectclass: posixGroup
 
-
 ## Users
-dn: cn=Fausto Branco,ou=UserGroups,dc=devops-db,dc=info
+dn: cn=Fausto Branco,ou=UserGroups,dc=ldap,dc=devops-db,dc=info
 cn: Fausto Branco
 gidnumber: 10000
 givenname: Fausto
@@ -36,10 +35,10 @@ objectclass: person
 sn: Branco
 uid: fbranco
 uidnumber: 10000
-userpassword: XXXXXXXXXXXXXXXXX
+userpassword: "1234qwer"
 
 ## Group MemberOf
-dn: cn=GitLabGroup,ou=SecurityGroups,dc=devops-db,dc=info
-cn: GitLabGroup
-member: cn=Fausto Branco,ou=UserGroups,dc=devops-db,dc=info
+dn: cn=GitLabGroup,ou=SecurityGroups,dc=ldap,dc=devops-db,dc=info
+cn: admins
+member: cn=Fausto Branco,ou=UserGroups,dc=ldap,dc=devops-db,dc=info
 objectclass: groupOfNames
