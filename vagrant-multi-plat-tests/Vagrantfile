@@ -1,0 +1,41 @@
+Vagrant.configure("2") do |config|
+  config.vm.define "tst-ubuntu-01" do |testvms|
+    testvms.vm.box = "bento/ubuntu-22.04"
+    testvms.vm.hostname = 'tst-ubuntu-01'
+
+    testvms.vm.network "public_network", use_dhcp_assigned_default_route: true, bridge: "enp7s0", ip: "172.21.5.171"
+    testvms.vm.synced_folder "/work/", "/work"
+    testvms.vm.provider :virtualbox do |v|
+        v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        v.customize ["modifyvm", :id, "--memory", 1024]
+        v.customize ["modifyvm", :id, "--name", "tst-ubuntu-01"]
+    end
+  end
+
+  config.vm.define "tst-almalinux-01" do |testvms|
+    testvms.vm.box = "almalinux/8"
+    testvms.vm.hostname = 'tst-almalinux-01'
+
+    testvms.vm.network "public_network", use_dhcp_assigned_default_route: true, bridge: "enp7s0", ip: "172.21.5.172"
+    testvms.vm.synced_folder "/work/", "/work"
+    testvms.vm.provider :virtualbox do |v|
+        v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        v.customize ["modifyvm", :id, "--memory", 1024]
+        v.customize ["modifyvm", :id, "--name", "tst-almalinux-01"]
+    end
+  end
+
+  config.vm.define "srv-alpine-01" do |testvms|
+    testvms.vm.box = "generic/alpine318"
+    testvms.vm.hostname = 'srv-alpine-01'
+
+    testvms.vm.network "public_network", use_dhcp_assigned_default_route: true, bridge: "enp7s0", ip: "172.21.5.173"
+    testvms.vm.synced_folder "/work/", "/work"
+    testvms.vm.provider :virtualbox do |v|
+        v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        v.customize ["modifyvm", :id, "--memory", 1024]
+        v.customize ["modifyvm", :id, "--name", "srv-alpine-01"]
+    end
+  end
+
+end
