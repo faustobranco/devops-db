@@ -1,0 +1,5 @@
+dn: cn=readonly-bind-dn,ou=ServiceGroups,dc=ldap,dc=devops-db,dc=info
+objectClass: organizationalRole
+objectClass: simpleSecurityObject
+cn: readonly-bind-dn
+userPassword: {SSHA}IYJhwtAEaBJM5Epume4A+0fN84iU9eXZ

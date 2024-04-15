@@ -1,0 +1,3 @@
+dn: cn=JenkinsAdmin,ou=SecurityGroups,dc=ldap,dc=devops-db,dc=info
+objectClass: groupOfNames
+member: cn=Fausto Branco,ou=UserGroups,dc=ldap,dc=devops-db,dc=info

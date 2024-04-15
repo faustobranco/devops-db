@@ -1,0 +1,4 @@
+dn: cn=JenkinsLabGroup,ou=SecurityGroups,dc=ldap,dc=devops-db,dc=info
+changetype: modify
+add: member
+member: cn=usr-service-jenkins,ou=ServiceGroups,dc=ldap,dc=devops-db,dc=info

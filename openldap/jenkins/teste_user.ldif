@@ -1,0 +1,15 @@
+## Users
+dn: cn=usr-service-jenkins,ou=ServiceGroups,dc=ldap,dc=devops-db,dc=info
+gidnumber: 10003
+givenname: Service
+homedirectory: /home/usrservicejenkins
+loginshell: /bin/bash
+objectclass: posixAccount
+objectclass: inetOrgPerson
+objectclass: organizationalPerson
+objectclass: person
+sn: Jenkins
+uid: usr-service-jenkins
+uidnumber: 10003
+mail: xxxxxxxxxxx@yyyy.com
+userpassword: {SSHA}IYJhwtAEaBJM5Epume4A+0fN84iU9eXZ

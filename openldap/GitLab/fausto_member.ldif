@@ -1,0 +1,4 @@
+dn: cn=Fausto Branco,ou=UserGroups,dc=ldap,dc=devops-db,dc=info
+changetype: modify
+add: memberOf
+memberOf: cn=GitLabGroup,ou=SecurityGroups,dc=ldap,dc=devops-db,dc=info
