@@ -39,5 +39,6 @@ userpassword: "1234qwer"
 
 ## Group MemberOf
 dn: cn=GitLabGroup,ou=SecurityGroups,dc=ldap,dc=devops-db,dc=info
+cn: admins
 member: cn=Fausto Branco,ou=UserGroups,dc=ldap,dc=devops-db,dc=info
 objectclass: groupOfNames
