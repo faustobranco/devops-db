@@ -1,0 +1,16 @@
+version: "3.5"
+
+services:
+  samba:
+    image: crazymax/samba
+    container_name: srv-fileserver-01
+    network_mode: host
+    volumes:
+      - /work/samba/smb:/data
+      - /work/samba/work:/work
+    environment:
+      - "TZ=$TIMEZONE"
+      - "SAMBA_LOG_LEVEL=3"
+      - "CONFIG_FILE=/data/config.yaml"
+    restart: always
+

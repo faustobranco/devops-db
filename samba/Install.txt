@@ -1,0 +1,124 @@
+https://github.com/crazy-max/docker-samba
+
+
+userdel -r devopsdbshare
+
+sudo adduser --no-create-home --disabled-password --disabled-login devopsdbshare
+
+sudo smbpasswd -a devopsdbshare
+
+
+
+
+cat /etc/passwd | grep devopsdbshare
+
+devopsdbshare:x:1003:1003:,,,:/home/devopsdbshare:/bin/bash
+
+
+
+Copiar o config.yml para o equivalente à pasta do container: /smb/config.yml
+
+
+mkdir -p /work/samba/smb
+mkdir -p /work/samba/work
+
+sudo chown devopsdbshare:devopsdbshare /work/samba/work
+
+
+
+docker container rm -f srv-fileserver-01
+
+docker compose up -d
+
+docker container logs srv-fileserver-01 --follow
+
+
+docker container ls
+CONTAINER ID   IMAGE                 COMMAND                  CREATED          STATUS                    PORTS                                                                                  NAMES
+d70c9407fbaa   crazymax/samba        "/init"                  57 minutes ago   Up 57 minutes (healthy)                                                                                          srv-fileserver-01
+
+
+
+#######################################################################################################################
+
+smbclient //172.21.5.72/work --user=devopsdbshare
+
+
+mkdir /mnt/work
+
+
+sudo mount -t cifs -o username=devopsdbshare,password=1234qwer,iocharset=utf8,file_mode=0777,dir_mode=0777 //172.21.5.72/work /mnt/work
+
+
+
+vi /etc/fstab
+
+//172.21.5.72/work /mnt/work cifs username=devopsdbshare,password=1234qwer,iocharset=utf8,file_mode=0777,dir_mode=0777 0 0
+
+mount -a
+
+ll /mnt/work/
+total 4
+drwxrwxrwx 2 root root    0 Apr 17 11:08 ./
+drwxr-xr-x 3 root root 4096 Apr 17 11:16 ../
+drwxrwxrwx 2 root root    0 Apr 17 11:08 bind9/
+
+#######################################################################################################################
+
+
+umount /mnt/work/
+
+#######################################################################################################################
+
+docker volume create \
+        --driver local \
+        --opt type=cifs \
+        --opt device=//172.21.5.72/work \
+        --opt o=addr=172.21.5.72,username=devopsdbshare,password=1234qwer,iocharset=utf8,file_mode=0777,dir_mode=0777  \
+        --name devopsdb-share
+
+
+docker volume ls
+DRIVER    VOLUME NAME
+local     devopsdb-share
+
+
+docker volume ls
+docker volume inspect devopsdb-share
+[
+    {
+        "CreatedAt": "2024-04-17T22:12:06+01:00",
+        "Driver": "local",
+        "Labels": null,
+        "Mountpoint": "/var/lib/docker/volumes/devopsdb-share/_data",
+        "Name": "devopsdb-share",
+        "Options": {
+            "device": "//172.21.5.72/work",
+            "o": "addr=172.21.5.72,username=devopsdbshare,password=1234qwer,iocharset=utf8,file_mode=0777,dir_mode=0777",
+            "type": "cifs"
+        },
+        "Scope": "local"
+    }
+]
+
+docker run -tid \
+    --network local-bridge \
+    --platform linux/amd64 \
+    -v devopsdb-share:/work \
+    --name test-smb-share ubuntu:22.04
+
+
+
+
+
+docker exec -it -u root --privileged test-smb-share /bin/bash
+
+root@cc54cf628ae9:/# cd /work/
+
+root@cc54cf628ae9:/work# ll
+total 4
+drwxrwxrwx 2 root root    0 Apr 17 11:08 ./
+drwxr-xr-x 3 root root 4096 Apr 17 11:16 ../
+drwxrwxrwx 2 root root    0 Apr 17 11:08 bind9/
+
+#devops #ldap #jenkins #cassandra #gitlab #database #pipelines #consul #linux #docker 
