@@ -1,0 +1,6 @@
+devpi-server:
+    host: 0.0.0.0
+    port: 4040
+    role: standalone 
+    serverdir: /work/devpi-data/data
+    restrict-modify: root
