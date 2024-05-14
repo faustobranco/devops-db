@@ -1,7 +1,7 @@
 @Library('devopsdb-global-lib') _
 
 import devopsdb.utilities.Utilities   
-def obj_Utilities = new Utilities()
+def obj_Utilities = new Utilities(this)
 
 pipeline {
     agent {

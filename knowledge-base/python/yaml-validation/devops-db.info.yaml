@@ -1,0 +1,25 @@
+version: 1
+group: infrastructure
+tech: dns 
+service: devops-db.info
+description: Blueprint with DNS zones from devops-db.info
+nameservers:
+  - name: ns1.devops-db.info
+    class: IN
+    type: A    
+    destination: 172.21.5.72
+admin: admin.devops-db.info
+serial_number: 2022122800
+time_to_refresh: 12h
+time_to_retry: 15m
+time_to_expire: 3w
+minimum_ttl: 2h
+zones:
+  - host: ldap
+    class: IN
+    type: A
+    destination: 172.21.5.150
+  - host: registry
+    class: IN
+    type: A
+    destination: 172.21.5.151

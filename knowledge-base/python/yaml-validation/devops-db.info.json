@@ -1,0 +1,140 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "type": "object",
+    "title": "devops-db.info",
+    "properties": {
+        "version": {
+            "type": "integer",
+            "minimum": 1
+        },
+        "group": {
+            "type": "string",
+            "enum": [
+                "infrastructure"
+            ]
+        },
+        "tech": {
+            "type": "string",
+            "enum": [
+                "dns"
+            ]
+        },
+        "service": {
+            "type": "string",
+            "maxLength": 40,
+            "minLength": 1
+
+        },
+        "description": {
+            "type": "string"
+        },
+        "nameservers": {
+            "type": "array",
+            "additionalItems": true,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "minLength": 1
+                    },
+                    "class": {
+                        "type": "string",
+                        "enum": [
+                            "IN"
+                        ]
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "A"
+                        ]
+                    },
+                    "destination": {
+                        "type": "string",
+                        "format": "ipv4"
+                    }
+                },
+                "additionalProperties": true,
+                "required": [
+                    "name",
+                    "class",
+                    "type",
+                    "destination"
+                ]
+            }
+        },
+        "admin": {
+            "type": "string"
+        },
+        "serial_number": {
+            "type": "integer"
+        },
+        "time_to_refresh": {
+            "type": "string"
+        },
+        "time_to_retry": {
+            "type": "string"
+        },
+        "time_to_expire": {
+            "type": "string"
+        },
+        "minimum_ttl": {
+            "type": "string"
+        },
+        "zones": {
+            "type": "array",
+            "additionalItems": true,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "host": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "minLength": 1
+                    },
+                    "class": {
+                        "type": "string",
+                        "enum": [
+                            "IN"
+                        ]
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "A"
+                        ]
+                    },
+                    "destination": {
+                        "type": "string",
+                        "format": "ipv4"
+                    }
+                },
+                "additionalProperties": true,
+                "required": [
+                    "host",
+                    "class",
+                    "type",
+                    "destination"
+                ]
+            }
+        }
+    },
+    "additionalProperties": true,
+    "required": [
+        "version",
+        "group",
+        "tech",
+        "service",
+        "description",
+        "nameservers",
+        "admin",
+        "serial_number",
+        "time_to_refresh",
+        "time_to_retry",
+        "time_to_expire",
+        "minimum_ttl",
+        "zones"
+    ]
+}
