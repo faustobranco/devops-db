@@ -13,6 +13,7 @@ public final class LogFormatterConstants {
     public static final String const_Info = "info";
     public static final String const_Warning = "warning";
     public static final String const_Error = "error";
+    public static final String const_None = "none";
 
     private LogFormatterConstants() {}
 }
