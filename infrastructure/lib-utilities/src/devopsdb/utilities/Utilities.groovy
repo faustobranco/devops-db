@@ -1,11 +1,15 @@
 /**
- * Example code for configuring a Shared Library in Groovy for Jenkins.
+ * Class with generic methods for use in pipelines.
  * @author fausto.branco
  * @author https://devops-db.com/
  * @version 1.0
- * @since   2024-05-09 
+ * @since   2024-05-09
  */
 package devopsdb.utilities
+
+import devopsdb.log.Logger
+import devopsdb.log.LogFormatterConstants
+import devopsdb.log.LogFormatter
 
 class Utilities implements Serializable {
 
@@ -21,13 +25,25 @@ class Utilities implements Serializable {
      * @exception IOException On input error.
      * @see IOException
      */
+    /**
+     * String logLevel, String loggerName, Boolean printDate, String dateFormat
+     */
+
+    LogFormatter obj_Formatter = new LogFormatter(LogFormatterConstants.const_Info, 'CreateFolders', false, '')
+    Logger obj_Log = new Logger(obj_Pipeline_Context, obj_Formatter)
+
+    obj_Log.info('Initializing Create Folders')
+    obj_Log.info('Validating structure')
     if (str_structure.isEmpty()) {
+      obj_Log.warning('Unknown structure')
       throw new Exception("str_structure parameter is Empty");
     }
     File directory = new File(str_structure);
+    obj_Log.debug('Checking structure')
     if (! directory.exists()){
       directory.mkdirs();
     }
+    obj_Log.info('Structure created')
   }
 
   def SparseCheckout(String str_gitUrl, String str_gitBranch, String str_path, String str_gitCredentials, String str_DestinationPath){
