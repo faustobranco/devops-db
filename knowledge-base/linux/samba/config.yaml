@@ -1,0 +1,22 @@
+auth:
+  - user: devopsdbshare
+    group: devopsdbshare
+    uid: 1003
+    gid: 1003
+    password: 1234qwer
+
+global:
+  - "hosts allow = 127.0.0.0/8 172.21.5.0/24"
+  - "hosts deny = '0.0.0.0/0'"
+  - "force user = devopsdbshare"
+  - "force group = devopsdbshare"  
+
+share:
+  - name: work
+    path: /work
+    browsable: yes
+    readonly: no
+    guestok: no
+    validusers: devopsdbshare
+    writelist: devopsdbshare
+    veto: no

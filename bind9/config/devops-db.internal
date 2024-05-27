@@ -11,13 +11,12 @@ $ORIGIN devops-db.internal.
                                     )
 
                      IN      NS     ns1.devops-db.internal.
-ns1                  IN      A      172.21.5.72
+ns1                  IN      A      172.21.5.155
 
 ; -- add dns records below
 
-srv-consul-01        IN      A      172.21.5.152
 gitlab               IN      A      172.21.5.153
 registry             IN      A      172.21.5.75
-jenkins              IN      A      172.21.5.70
-ldapman              IN      A      172.21.5.72
+jenkins              IN      A      172.21.5.154
+ldapman              IN      A      172.21.5.76
 devpi                IN      A      172.21.5.160
