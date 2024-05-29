@@ -1,0 +1,8 @@
+- hosts: "tests_Hosts"
+  become: true
+  roles:
+   - ldap
+  vars_files:
+    - vars/global_vars.yaml
+  gather_facts: True
+

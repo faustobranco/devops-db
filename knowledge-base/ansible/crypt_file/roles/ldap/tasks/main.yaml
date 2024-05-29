@@ -1,0 +1,4 @@
+- name: Copy certificates
+  copy:
+    src: "{{ role_path }}/files/certs/"
+    dest: /etc/ssl/certs/
