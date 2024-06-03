@@ -1,0 +1,9 @@
+- hosts: "{{ cluster_group | default('none') }}"
+  become: true
+  roles:
+   - configure_ldap
+  vars_files:
+    - /work/external/global_vars/global_access.yaml
+    - /work/external/global_vars/global_ldap.yaml
+  gather_facts: True
+

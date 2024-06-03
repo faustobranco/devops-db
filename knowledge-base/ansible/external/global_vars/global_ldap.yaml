@@ -1,0 +1,3 @@
+global_devops_ldap:
+  tls_cacert: /etc/ssl/certs/ldapcacert.crt
+  sudoers_base: ou=AdminGroups,dc=ldap,dc=devops-db,dc=info
