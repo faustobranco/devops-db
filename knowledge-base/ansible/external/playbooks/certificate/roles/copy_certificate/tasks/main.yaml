@@ -1,0 +1,4 @@
+- name: Copy certificates
+  copy:
+    src: "/work/external/global_files/certificates/ldapcacert.crt"
+    dest: /etc/ssl/certs/ldapcacert.crt

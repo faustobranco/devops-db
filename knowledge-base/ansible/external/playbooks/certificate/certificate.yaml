@@ -1,0 +1,8 @@
+- hosts: "{{ cluster_group | default('none') }}"
+  become: true
+  roles:
+   - copy_certificate
+  vars_files:
+    - /work/external/global_vars/global_access.yaml
+  gather_facts: True
+
