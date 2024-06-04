@@ -1,0 +1,15 @@
+- name: output the global playbook 'group' variable
+  ansible.builtin.debug: 
+    var: host_group
+
+- name: output the global playbook 'tech' variable
+  ansible.builtin.debug: 
+    var: host_tech
+
+- name: output the global playbook 'service' variable
+  ansible.builtin.debug: 
+    var: host_service
+
+#- name: All vars
+#  ansible.builtin.debug: 
+#    var: vars
