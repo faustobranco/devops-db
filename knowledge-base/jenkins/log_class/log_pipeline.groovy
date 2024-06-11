@@ -24,9 +24,6 @@ pipeline {
     }
     stages {
         stage('Example_src') {
-            agent {
-                label 'docker'
-            }
             steps {
                 script {
                     def str_folder = "${env.WORKSPACE}/NewFolder/Level1/Level2"
@@ -36,9 +33,6 @@ pipeline {
             }
         }
         stage('Example_vars') {
-            agent {
-                label 'docker'
-            }
             steps {
                 script {
                     echo(obj_LogPipeline.obj_Config_Formatter.str_loggerName)
@@ -49,18 +43,12 @@ pipeline {
             }
         }
         stage('Validate') {
-            agent {
-                label 'docker'
-            }
             steps {
                 sh 'ls -R'
                 sh 'sleep 1s'
             }
         }
         stage('Cleanup') {
-            agent {
-                label 'docker'
-            }
             steps {
                 cleanWs deleteDirs: true, disableDeferredWipeout: true
             }

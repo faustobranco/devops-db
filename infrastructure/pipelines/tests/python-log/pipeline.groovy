@@ -16,9 +16,6 @@ pipeline {
     }
     stages {
         stage('Environment') {
-            agent {
-                label 'docker'
-            }
             steps {
                 script {
                     def str_folder = "${env.WORKSPACE}/pipelines/resources/pip"
@@ -35,9 +32,6 @@ pipeline {
             }
         }
         stage('Script') {
-            agent {
-                label 'docker'
-            }
             steps {
                 script {
                     def str_folder = "${env.WORKSPACE}/pipelines/python/log"
@@ -53,9 +47,6 @@ pipeline {
             }
         }
         stage('Cleanup') {
-            agent {
-                label 'docker'
-            }
             steps {
                 cleanWs deleteDirs: true, disableDeferredWipeout: true
             }

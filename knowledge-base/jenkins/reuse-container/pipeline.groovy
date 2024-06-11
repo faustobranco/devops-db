@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'ubuntu_python:3.10.6'
+            image 'registry.devops-db.internal:5000/ubuntu_python:3.10.6'
             label 'docker'
             args '-u root'
         }
@@ -11,18 +11,12 @@ pipeline {
             }
     stages {
         stage('Build') {
-            agent {
-                label 'docker'
-            }      
             steps {
                 sh 'date >> data.txt'
                 sh 'ls -lah'
             }
         }
         stage('Finish') {
-            agent {
-            label 'docker'
-            }       
             steps {
                 sh 'ls -lah'
                 sh 'cat data.txt'
@@ -30,10 +24,7 @@ pipeline {
             }
         }
         stage('Cleanup') {
-            agent {
-                label 'docker'
-            }               
-            steps {            
+            steps {
                 cleanWs deleteDirs: true, disableDeferredWipeout: true
             }
         }        

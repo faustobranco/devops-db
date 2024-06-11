@@ -12,9 +12,6 @@ pipeline {
     stages {
         stage('Source') {
             when { not { changeRequest() } }
-            agent {
-                label 'docker'
-            }
             steps {
                 updateGitlabCommitStatus name: 'Validation', state: 'pending'
                 cleanWs deleteDirs: true, disableDeferredWipeout: true
@@ -27,36 +24,24 @@ pipeline {
         }
         stage('Validation') {
             when { not { changeRequest() } }
-            agent {
-                label 'docker'
-            }
             steps {
                 sh 'printenv'
             }
         }
         stage('Build') {
             when { not { changeRequest() } }
-            agent {
-                label 'docker'
-            }
             steps {
                 sh 'sleep 3h'
             }
         }
         stage('Deploy') {
             when { branch 'master' }
-            agent {
-                label 'docker'
-            }
             steps {
                 updateGitlabCommitStatus name: 'Deploy', state: 'pending'
                 sh 'printenv'
             }
         }
         stage('Cleanup') {
-            agent {
-                label 'docker'
-            }
             steps {
                 cleanWs deleteDirs: true, disableDeferredWipeout: true
                 updateGitlabCommitStatus name: 'Cleanup', state: 'success'
