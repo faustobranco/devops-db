@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: devopsdb
+Version: 1.0.0
+Summary: Devops-DB
+Home-page: UNKNOWN
+Author: Fausto Branco
+Author-email: fausto.branco@gmail.com
+License: UNKNOWN
+Description: Module with general-purpose DevOps-DB functions.
+Platform: UNKNOWN
