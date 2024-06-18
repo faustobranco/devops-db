@@ -1,13 +1,14 @@
 Vagrant.configure("2") do |config|
-  config.vm.define "srv-devpi-01" do |srvdevpi|
-    srvdevpi.vm.box = "bento/ubuntu-22.04"
-    srvdevpi.vm.hostname = 'srv-devpi-01'
+  config.vm.define "srv-infrastructure-devpi-master-01", autostart: true do |devpi|
+    devpi.vm.box = "bento/ubuntu-22.04"
+    devpi.vm.hostname = 'srv-infrastructure-devpi-master-01'
 
-    srvdevpi.vm.network "public_network", use_dhcp_assigned_default_route: true, bridge: "enp7s0", ip: "172.21.5.160"
-    srvdevpi.vm.provider :virtualbox do |v|
+    devpi.vm.network "public_network", use_dhcp_assigned_default_route: true, bridge: "enp7s0", ip: "172.21.5.160"
+    devpi.vm.synced_folder "/work/", "/work"
+    devpi.vm.provider :virtualbox do |v|
         v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         v.customize ["modifyvm", :id, "--memory", 1024]
-        v.customize ["modifyvm", :id, "--name", "srv-devpi-01"]
+        v.customize ["modifyvm", :id, "--name", "srv-infrastructure-devpi-master-01"]
     end
   end
 end
