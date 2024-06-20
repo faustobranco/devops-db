@@ -30,7 +30,7 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - minikube
+          - srv-infrastructure-microk8-master-01
 
 ---
 apiVersion: v1

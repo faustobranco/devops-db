@@ -19,7 +19,7 @@ spec:
       serviceAccountName: jenkins-admin
       containers:
         - name: jenkins
-          image: registry.devops-db.internal:5000/img-jenkins-devopsdb:1.0
+          image: registry.devops-db.internal:5000/img-jenkins-devopsdb:2.0
           resources:
             limits:
               memory: "2Gi"
