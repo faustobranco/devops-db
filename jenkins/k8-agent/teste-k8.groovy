@@ -3,7 +3,7 @@ pipeline {
         skipDefaultCheckout(true)
     }
     agent {
-            label 'k8-agent'
+            label 'microk8-agent'
           }
     stages {    
         stage('Script') {
