@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-bash-pods
+spec:
+  containers:
+  - name: container-1
+    image: debian:latest
+    command: [ "sleep" ]
+    args: [ "infinity" ]
+    env:
+    - name: CONTAINER_NAME
+      value: "container-1"
+    volumeMounts:
+    - name: shared-volume
+      mountPath: /mnt
+  - name: container-2
+    image: debian:latest
+    command: [ "sleep" ]
+    args: [ "infinity" ]
+    env:
+    - name: CONTAINER_NAME
+      value: "container-2"
+    volumeMounts:
+    - name: shared-volume
+      mountPath: /mnt
+  - name: container-3
+    image: debian:latest
+    command: [ "sleep" ]
+    args: [ "infinity" ]
+    env:
+    - name: CONTAINER_NAME
+      value: "container-3"
+    volumeMounts:
+    - name: shared-volume
+      mountPath: /mnt
+  volumes:
+  - name: shared-volume
+    emptyDir: {}
+    

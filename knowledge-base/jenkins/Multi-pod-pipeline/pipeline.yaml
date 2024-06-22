@@ -1,0 +1,64 @@
+pipeline {
+  agent {
+    kubernetes {
+      yaml """
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            some-label: "pod-template-${env.BUILD_ID}"
+        spec:
+          containers:
+          - name: container-1
+            image: registry.devops-db.internal:5000/img-jenkins-devopsdb:2.0
+            env:
+            - name: CONTAINER_NAME
+              value: "container-1"
+            volumeMounts:
+            - name: shared-volume
+              mountPath: /mnt
+            command:
+            - cat
+            tty: true
+          - name: container-2
+            image: ubuntu:22.04
+            env:
+            - name: CONTAINER_NAME
+              value: "container-2"
+            volumeMounts:
+            - name: shared-volume
+              mountPath: /mnt
+            command:
+            - cat
+            tty: true
+          volumes:
+          - name: shared-volume
+            emptyDir: {}            
+        """
+      retries 2
+    }
+  }
+    stages {    
+        stage('test container-1') {
+            steps {
+                container('container-1') {
+                  script {
+                    sh 'echo $CONTAINER_NAME'
+                    sh 'echo $CONTAINER_NAME > /mnt/shared_volume.txt'
+                   }
+                }
+            }
+        }
+        stage('test container-2') {
+            steps {
+                container('container-2') {
+                  script {
+                    sh 'echo $CONTAINER_NAME'
+                    sh 'cat /mnt/shared_volume.txt'
+                    sh 'sleep 10m'
+                   }
+                }
+            }
+        }
+    }  
+}
