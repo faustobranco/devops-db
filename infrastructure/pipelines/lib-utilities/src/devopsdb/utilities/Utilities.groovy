@@ -28,22 +28,28 @@ class Utilities implements Serializable {
     /**
      * String logLevel, String loggerName, Boolean printDate, String dateFormat
      */
+    try {
 
-    LogFormatter obj_Formatter = new LogFormatter(LogFormatterConstants.const_Info, 'CreateFolders', false, '')
-    Logger obj_Log = new Logger(obj_Pipeline_Context, obj_Formatter)
+      LogFormatter obj_Formatter = new LogFormatter(LogFormatterConstants.const_Info, 'CreateFolders', false, '')
+      Logger obj_Log = new Logger(obj_Pipeline_Context, obj_Formatter)
 
-    obj_Log.info('Initializing Create Folders')
-    obj_Log.info('Validating structure')
-    if (str_structure.isEmpty()) {
-      obj_Log.warning('Unknown structure')
-      throw new Exception("str_structure parameter is Empty");
+      obj_Log.info('Initializing Create Folders')
+      obj_Log.info('Container: ' + obj_Pipeline_Context.env.CONTAINER_NAME )
+      obj_Log.info('Validating structure')
+      if (str_structure.isEmpty()) {
+        obj_Log.warning('Unknown structure')
+        throw new Exception("str_structure parameter is Empty");
+      }
+      File directory = new File(str_structure);
+      obj_Log.debug('Checking structure: ' + str_structure)
+      if (!directory.exists()) {
+        directory.mkdirs();
+      }
+      obj_Log.info('Structure created: ' + str_structure)
     }
-    File directory = new File(str_structure);
-    obj_Log.debug('Checking structure')
-    if (! directory.exists()){
-      directory.mkdirs();
+    catch(Exception ex) {
+      println(ex.toString());
     }
-    obj_Log.info('Structure created')
   }
 
   def SparseCheckout(String str_gitUrl, String str_gitBranch, String str_path, String str_gitCredentials, String str_DestinationPath){
