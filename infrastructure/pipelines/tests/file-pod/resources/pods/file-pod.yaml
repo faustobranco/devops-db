@@ -13,17 +13,14 @@ spec:
     command:
     - cat
     tty: true
-  - name: container-2
-    image: ubuntu:22.04
+  - name: jnlp
+    image: jenkins/inbound-agent
     env:
     - name: CONTAINER_NAME
-      value: "container-2"
+      value: "jnlp"
     volumeMounts:
     - name: shared-volume
       mountPath: /mnt
-    command:
-    - cat
-    tty: true
   volumes:
   - name: shared-volume
     emptyDir: {}
