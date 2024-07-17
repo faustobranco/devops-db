@@ -15,6 +15,9 @@ pipeline {
     }
     environment {
         ANSIBLE_HOST_KEY_CHECKING = 'false' 
+        host_group = 'infrastructure'
+        host_tech = 'devops'
+        host_service = 'cicd'
     }    
     stages {
         stage('Script') {
