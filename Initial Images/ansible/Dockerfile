@@ -1,10 +1,11 @@
 FROM registry.devops-db.internal:5000/ubuntu_python:3.10.6
+ARG DEBIAN_FRONTEND=noninteractive
 
 USER root
 
 ENV WORKDIR /pipeline
 RUN mkdir -p ${WORKDIR}
-WORKDIR ${WORKDIR}\
+WORKDIR ${WORKDIR}
 
 RUN apt update\
     && apt install -y software-properties-common\
