@@ -1,0 +1,8 @@
+- hosts: "tests_Hosts"
+  become: true
+  roles:
+   - dynamic_inventory
+  vars_files:
+    - ../global_vars/global_access.yaml
+  gather_facts: True
+
