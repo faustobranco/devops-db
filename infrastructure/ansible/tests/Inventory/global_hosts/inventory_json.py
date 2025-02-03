@@ -44,6 +44,9 @@ class DynamicInventory(object):
                         "srv-infrastructure-jenkins-master-01": {
                             "ansible_host": "172.21.5.154",
                         },
+                         "srv-infrastructure-vault-master-01": {
+                            "ansible_host": "172.21.5.157",
+                        },
                     }
                 },
                 "all": {
@@ -54,9 +57,11 @@ class DynamicInventory(object):
                 "tests_Hosts": {
                     "hosts": [
                         "srv-infrastructure-gitlab-master-01",
-                        "srv-infrastructure-jenkins-master-01"
+                        "srv-infrastructure-jenkins-master-01",
+                        "srv-infrastructure-vault-master-01"
                     ],
                     "vars": {
+                        "host_key_checking": "false",
                         "host_group": self.host_group,
                         "host_tech": self.host_tech,
                         "host_service": self.host_service

@@ -14,7 +14,6 @@ pipeline {
         skipDefaultCheckout(true)
     }
     environment {
-        ANSIBLE_HOST_KEY_CHECKING = 'false' 
         host_group = 'infrastructure'
         host_tech = 'devops'
         host_service = 'cicd'
@@ -56,6 +55,7 @@ pipeline {
             steps {
                 container('container-1') {
                     script {
+                        sh "chmod +x -R ${env.WORKSPACE}/ansibles/Inventory/global_hosts/inventory_json.py"                        
                         sh """ ansible-playbook ${env.WORKSPACE}/ansibles/Inventory/playbooks/dynamic_inventory.yaml\
                                              -i ${env.WORKSPACE}/ansibles/Inventory/global_hosts/inventory_json.py\
                                 --vault-id prod@${env.WORKSPACE}/resources/secrets/.vault_password.sec """

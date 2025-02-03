@@ -13,6 +13,8 @@ def call(str_Build_id, str_image) {
             env:
             - name: CONTAINER_NAME
               value: "container-1"
+            - name: ANSIBLE_HOST_KEY_CHECKING
+              value: "False"
             volumeMounts:
             - name: shared-volume
               mountPath: /mnt
