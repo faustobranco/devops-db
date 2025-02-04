@@ -20,3 +20,4 @@ registry             IN      A      172.21.5.75
 jenkins              IN      A      172.21.5.154
 ldapman              IN      A      172.21.5.76
 devpi                IN      A      172.21.5.160
+vault                IN      A      172.21.5.157
