@@ -12,6 +12,7 @@ client = hvac.Client(url=VAULT_URL)
 ret_auth = client.auth.approle.login(VAULT_ROLE_ID, VAULT_SECRET_ID)
 
 client.secrets.kv.v2.create_or_update_secret(
+    mount_point='secret',
     path='infrastructure/jenkins/test-secret02',
     secret=dict(url='http://devops-db.internal/', token='1234567890qwertyuio'),
 )
