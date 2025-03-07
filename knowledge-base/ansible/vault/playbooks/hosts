@@ -1,0 +1,5 @@
+[jenkins_Hosts]
+srv-infrastructure-jenkins-master-01 ansible_host=172.21.5.154
+
+[devpi_Hosts]
+srv-infrastructure-devpi-master-01 ansible_host=172.21.5.160

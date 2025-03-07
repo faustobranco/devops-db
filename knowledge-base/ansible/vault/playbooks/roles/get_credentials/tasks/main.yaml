@@ -1,0 +1,19 @@
+- name: Read the latest version of a kv2 secret from Vault via the remote host with userpass auth
+  community.hashi_vault.vault_kv2_get:
+    url: 'https://vault.devops-db.internal:8200/'
+    validate_certs: false
+    path: 'infrastructure/jenkins/test-secret01'
+    auth_method: 'approle'
+    role_id: '{{ vault_role_id }}'
+    secret_id: '{{ vault_secret_id }}'
+  register: vault_response
+
+- name: Display the results
+  ansible.builtin.debug:
+    msg:
+      - "Secret: {{ vault_response.secret }}"
+      - "Data: {{ vault_response.data }} (contains secret data & metadata in kv2)"
+      - "Metadata: {{ vault_response.metadata }}"
+      - "Full vault_response: {{ vault_response.raw }}"
+      - "Value of key 'pwd' in the secret: {{ vault_response.secret.pwd }}"
+      - "Value of key 'username' in the secret: {{ vault_response.secret.username }}"
