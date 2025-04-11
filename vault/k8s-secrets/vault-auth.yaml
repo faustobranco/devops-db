@@ -1,0 +1,12 @@
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: static-auth-jenkins
+  namespace: default
+spec:
+  vaultConnectionRef: default
+  method: kubernetes
+  mount: auth-kubernetes
+  kubernetes:
+    role: jenkins
+    serviceAccount: vault-secrets-operator-controller-manager

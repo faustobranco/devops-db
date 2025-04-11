@@ -1,0 +1,5 @@
+defaultVaultConnection:
+  enabled: true
+  address: "https://vault.devops-db.internal:8200"
+  skipTLSVerify: true
+
