@@ -1,0 +1,98 @@
+[db]
+postgres-local-postgresql = { host = "127.0.0.1", driver = "postgres", port = 5432, database = "postgres", username = "postgres"}
+postgres-local-atuin = { host = "127.0.0.1", driver = "postgres", port = 5432, database = "db_atuin", username = "usr_atuin"}
+
+[settings]
+mouse_mode = true
+macos_option_as_alt = false
+
+[keybindings.Menu]
+"<Ctrl-c>" = "AbortQuery"
+"<Ctrl-x>" = "Quit"
+"q" = "AbortQuery"
+"<Alt-1>" = "FocusMenu"
+"<Alt-2>" = "FocusEditor"
+"<Alt-3>" = "FocusData"
+"<Alt-4>" = "FocusHistory"
+"<Alt-5>" = "FocusFavorites"
+"<Ctrl-s>" = "FocusMenu"
+"<Ctrl-q>" = "FocusEditor"
+"<Ctrl-r>" = "FocusData"
+"<Ctrl-h>" = "FocusHistory"
+"<Ctrl-f>" = "FocusFavorites"
+"<Tab>" = "CycleFocusForwards"
+"<Backtab>" = "CycleFocusBackwards"
+
+[keybindings.Editor]
+"<Ctrl-c>" = "AbortQuery"
+"<Ctrl-x>" = "Quit"
+"q" = "AbortQuery"
+"<Ctrl-e>" = "SubmitEditorQuery"
+"<F5>" = "SubmitEditorQuery"
+"<Alt-1>" = "FocusMenu"
+"<Alt-2>" = "FocusEditor"
+"<Alt-3>" = "FocusData"
+"<Alt-4>" = "FocusHistory"
+"<Alt-5>" = "FocusFavorites"
+"<Ctrl-s>" = "FocusMenu"
+"<Ctrl-q>" = "FocusEditor"
+"<Ctrl-r>" = "FocusData"
+"<Ctrl-h>" = "FocusHistory"
+"<Ctrl-f>" = "FocusFavorites"
+"<Backtab>" = "CycleFocusBackwards"
+
+[keybindings.History]
+"<Ctrl-c>" = "AbortQuery"
+"<Ctrl-x>" = "Quit"
+"q" = "AbortQuery"
+"<Alt-1>" = "FocusMenu"
+"<Alt-2>" = "FocusEditor"
+"<Alt-3>" = "FocusData"
+"<Alt-4>" = "FocusHistory"
+"<Alt-5>" = "FocusFavorites"
+"<Ctrl-s>" = "FocusMenu"
+"<Ctrl-q>" = "FocusEditor"
+"<Ctrl-r>" = "FocusData"
+"<Ctrl-h>" = "FocusHistory"
+"<Ctrl-f>" = "FocusFavorites"
+"<Tab>" = "CycleFocusForwards"
+"<Backtab>" = "CycleFocusBackwards"
+
+[keybindings.Data]
+"<Ctrl-c>" = "AbortQuery"
+"<Ctrl-x>" = "Quit"
+"q" = "AbortQuery"
+"<Alt-1>" = "FocusMenu"
+"<Alt-2>" = "FocusEditor"
+"<Alt-3>" = "FocusData"
+"<Alt-4>" = "FocusHistory"
+"<Alt-5>" = "FocusFavorites"
+"<Ctrl-s>" = "FocusMenu"
+"<Ctrl-q>" = "FocusEditor"
+"<Ctrl-r>" = "FocusData"
+"<Ctrl-h>" = "FocusHistory"
+"<Ctrl-f>" = "FocusFavorites"
+"<Tab>" = "CycleFocusForwards"
+"<Backtab>" = "CycleFocusBackwards"
+
+[keybindings.Favorites]
+"<Ctrl-c>" = "AbortQuery"
+"<Ctrl-x>" = "Quit"
+"q" = "AbortQuery"
+"<Alt-1>" = "FocusMenu"
+"<Alt-2>" = "FocusEditor"
+"<Alt-3>" = "FocusData"
+"<Alt-4>" = "FocusHistory"
+"<Alt-5>" = "FocusFavorites"
+"<Ctrl-s>" = "FocusMenu"
+"<Ctrl-q>" = "FocusEditor"
+"<Ctrl-r>" = "FocusData"
+"<Ctrl-h>" = "FocusHistory"
+"<Ctrl-f>" = "FocusFavorites"
+"<Tab>" = "CycleFocusForwards"
+"<Backtab>" = "CycleFocusBackwards"
+
+[keybindings.PopUp]
+"<Ctrl-c>" = "AbortQuery"
+"<Ctrl-x>" = "Quit"
+"q" = "AbortQuery"
