@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: filebeat-test-pod-custom
+  namespace: default
+spec:
+  containers:
+  - name: serviceexample
+    image: busybox
+    command: ["/bin/sh", "-c"]
+    args:
+      - |
+        while true; do
+          echo "{\"@timestamp\":\"$(date --utc +%Y-%m-%dT%H:%M:%S.%3NZ)\",\"message\":\"Teste log custom\",\"service\":\"serviceexample-custom\",\"user\":\"fbranco\",\"region\":\"Portugal\",\"env\":\"dev\"}" \
+          >> /var/log/serviceexample_custom/test.log
+          sleep 1
+        done
+    volumeMounts:
+    - name: log-volume
+      mountPath: /var/log/serviceexample_custom
+
+  - name: filebeat
+    image: docker.elastic.co/beats/filebeat:9.1.4
+    args: ["-e", "-c", "/usr/share/filebeat/filebeat.yml"]
+    volumeMounts:
+    - name: log-volume
+      mountPath: /var/log/serviceexample_custom
+    - name: filebeat-config-custom
+      mountPath: /usr/share/filebeat/filebeat.yml
+      subPath: filebeat.yml
+
+  volumes:
+  - name: log-volume
+    emptyDir: {}
+
+  - name: filebeat-config-custom
+    configMap:
+      name: filebeat-config-custom

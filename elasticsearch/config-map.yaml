@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-config
+data:
+  filebeat.yml: |
+    filebeat.inputs:
+    - type: filestream
+      enabled: true
+      paths:
+        - /var/log/serviceexample/*.log
+      multiline.pattern: '^[[:space:]]'
+      multiline.negate: false
+      multiline.match: after
+      scan_frequency: 5s
+      fingerprint:
+        length: 16
+        offset: 0
+
+    output.elasticsearch:
+      hosts: ["https://elasticsearch.devops-db.internal:9200"]
+      username: "elastic"
+      password: "3G+oOq0T_9tZ7oZM32d-"
+      index: "serviceexample-logs-%{+yyyy.MM.dd}"
+      ssl.verification_mode: none
+
+    setup.template.name: "serviceexample-logs"
+    setup.template.pattern: "serviceexample-logs-*"
+
+    logging.level: info
+    logging.to_files: true
+    logging.files:
+      path: /usr/share/filebeat/logs
+      name: filebeat.log
+      keepfiles: 7
+      permissions: 0644

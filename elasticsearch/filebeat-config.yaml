@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: filebeat-test-pod
+spec:
+  containers:
+  - name: serviceexample
+    image: busybox
+    command: ["/bin/sh", "-c"]
+    args:
+      - while true; do echo "$(date) Test log line" >> /var/log/serviceexample/test.log; sleep 1; done
+    volumeMounts:
+    - name: log-volume
+      mountPath: /var/log/serviceexample
+
+  - name: filebeat
+    image: docker.elastic.co/beats/filebeat:9.1.4
+    args: ["-e", "-c", "/usr/share/filebeat/filebeat.yml"]
+    volumeMounts:
+    - name: log-volume
+      mountPath: /var/log/serviceexample
+    - name: filebeat-config
+      mountPath: /usr/share/filebeat/filebeat.yml
+      subPath: filebeat.yml
+
+  volumes:
+  - name: log-volume
+    emptyDir: {}
+
+  - name: filebeat-config
+    configMap:
+      name: filebeat-config
