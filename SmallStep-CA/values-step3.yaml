@@ -1,0 +1,517 @@
+# Default values for step-certificates.
+
+# kind is the type of object to use when deploying the CA.
+# Changing the deployment type is experimental.
+kind: StatefulSet
+
+# replicaCount is the number of replicas of step-certificates.
+# Only one replica is supported at this time.
+replicaCount: 1
+
+# nameOverride overrides the name of the chart.
+nameOverride: ""
+# fullnameOverride overrides the full name of the chart.
+fullnameOverride: ""
+
+# image contains the docker image for step-certificates.
+image:
+  repository: cr.smallstep.com/smallstep/step-ca
+  initContainerRepository: busybox:latest
+  pullPolicy: IfNotPresent
+  tag: ""
+
+# commands allows to override the default command.
+command: []
+# args allows to override the default arguments.
+args: []
+# workingDir specifies the ca container working directory
+workingDir: "/home/step"
+
+# Use existing secrets instead of 'bootstrap' init-container or 'inject'-element from helm chart
+# Note, the MutatingWebhookConfiguration created by autocert is not patched with CA bundle as the bootstrap init-container is not run
+existingSecrets:
+  enabled: false
+  ca: false
+  issuer: false
+  certsAsSecret: false
+  configAsSecret: false
+  sshHostCa: false
+  sshUserCa: false
+  sshTemplates: false
+
+# bootstrap contains the docker image for bootstrapping the configurations.
+#
+# It's also possible to disable the creation of secrets and configmaps.
+bootstrap:
+  image:
+    repository: cr.smallstep.com/smallstep/step-ca-bootstrap
+    tag: latest
+    pullPolicy: IfNotPresent
+  # enabled defines if the bootstrap job is created.
+  enabled: false
+  # configmaps defines if the configmaps are created.
+  configmaps: true
+  # secrets defines if the secrets are created.
+  secrets: true
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    runAsUser: 1000
+    capabilities:
+      drop: ["ALL"]
+    runAsNonRoot: true
+    # seccompProfile:
+    #   type: RuntimeDefault
+
+# Extra labels
+podExtraLabels: {}
+
+# inject contains values to be injected into config maps and secrets
+inject:
+  enabled: true
+  config:
+    files:
+      ca.json:
+        root: /home/step/certs/root_ca.crt
+        federateRoots: []
+        crt: /home/step/certs/intermediate_ca.crt
+        key: /home/step/secrets/intermediate_ca_key
+        address: 0.0.0.0:9000
+        dnsNames:
+          - ca.devops-db.internal
+          - ca.default.svc.cluster.local
+          - step-ca.step-ca.svc.cluster.local
+          - 127.0.0.1
+        logger:
+          format: json
+        db:
+          type: badger
+          dataSource: /home/step/db
+        authority:
+          claims:
+            minTLSCertDuration: 5m
+            maxTLSCertDuration: 8760h
+            defaultTLSCertDuration: 8760h
+            disableRenewal: false
+            minHostSSHCertDuration: 5m
+            maxHostSSHCertDuration: 1680h
+            defaultHostSSHCertDuration: 720h
+            minUserSSHCertDuration: 5m
+            maxUserSSHCertDuration: 24h
+            defaultUserSSHCertDuration: 24h
+          provisioners:
+            - type: ACME
+              name: acme
+              forceCN: true
+              claims: {}
+              
+        tls:
+          cipherSuites:
+            - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+            - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+            - TLS_AES_128_GCM_SHA256
+          minVersion: 1.2
+          maxVersion: 1.3
+          renegotiation: false
+      defaults.json:
+        ca-url: https://ca.devops-db.internal
+        ca-config: /home/step/config/ca.json
+        fingerprint: b8d4d77badb5aeca4d23a67269846aa3dbf3271c94c0cf97e82e482aab6e7732
+        root: /home/step/certs/root_ca.crt
+    templates:
+      x509_leaf.tpl: |
+        {
+          "subject": {{ toJson .Subject }},
+          "sans": {{ toJson .SANs }},
+        {{- if typeIs "*rsa.PublicKey" .Insecure.CR.PublicKey }}
+          "keyUsage": ["keyEncipherment", "digitalSignature"],
+        {{- else }}
+          "keyUsage": ["digitalSignature"],
+        {{- end }}
+          "extKeyUsage": ["serverAuth", "clientAuth"]
+        }
+      ssh.tpl: |
+        {
+          "type": {{ toJson .Type }},
+          "keyId": {{ toJson .KeyID }},
+          "principals": {{ toJson .Principals }},
+          "extensions": {{ toJson .Extensions }},
+          "criticalOptions": {{ toJson .CriticalOptions }}
+        }
+
+  certificates:
+    certificate_issuer: ""
+    # certificate_issuer: |
+    #   -----BEGIN CERTIFICATE-----
+    #   ...
+    #   -----END CERTIFICATE-----
+
+    # intermediate_ca contains the text of the intermediate CA Certificate
+    intermediate_ca: |
+      -----BEGIN CERTIFICATE-----
+      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
+      EBl4KHxZAdOAQ31PBTIXf+/chw==
+      -----END CERTIFICATE-----
+    # root_ca contains the text of the root CA Certificate
+    root_ca: |
+      -----BEGIN CERTIFICATE-----
+      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
+      eQ==
+      -----END CERTIFICATE-----
+    # ssh_host_ca contains the text of the public ssh key for the SSH root CA
+    ssh_host_ca: ""
+    # ssh_host_ca: "ecdsa-sha2-nistp384 public-key-here=="
+
+    # ssh_user_ca contains the text of the public ssh key for the SSH root CA
+    ssh_user_ca: ""
+    # ssh_user_ca: "ecdsa-sha2-nistp384 public-key-here=="
+
+  secrets:
+    # ca_password contains the password used to encrypt x509.intermediate_ca_key, ssh.host_ca_key and ssh.user_ca_key
+    # This value must be base64 encoded.
+    ca_password: eVd6Jl5nR0dkRUtoQnk4MEVBNEsjYVFkeg==
+    provisioner_password: ""
+
+    certificate_issuer:
+      # enabled enables injection of certificate issuer certificates and keys when set to true.
+      enabled: false
+      key: ""
+      # key: |
+      #   -----BEGIN ENCRYPTED PRIVATE KEY-----
+      #   ...
+      #   -----END ENCRYPTED PRIVATE KEY-----
+      # password sets the certificate issuer password that decrypts the encrypted certificate issuer key.  Must be base64 encoded.
+      password: ""
+
+    x509:
+      # enabled enables injection of x509 certificates and keys when set to true.
+      enabled: true
+      # intermediate_ca_key contains the contents of your encrypted intermediate CA key
+      intermediate_ca_key: |
+        -----BEGIN PRIVATE KEY-----
+        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
+        FCcAx9X92vXZKDCkj7C9eEJejejadA==
+        -----END PRIVATE KEY-----
+
+      # root_ca_key contains the contents of your encrypted root CA key
+      # Note that this value can be omitted without impacting the functionality of step-certificates
+      # If supplied, this should be encrypted using a unique password that is not used for encrypting
+      # the intermediate_ca_key, ssh.host_ca_key or ssh.user_ca_key.
+      root_ca_key: ""
+      # root_ca_key: |
+      #   -----BEGIN EC PRIVATE KEY-----
+      #   ...
+      #   -----END EC PRIVATE KEY-----
+
+    ssh:
+      # enabled enables injection of ssh certificates and keys when set to true.
+      enabled: true
+      # ssh_host_ca_key contains the contents of your encrypted SSH Host CA key
+      host_ca_key: ""
+      # host_ca_key: |
+      #   -----BEGIN OPENSSH PRIVATE KEY-----
+      #   ...
+      #   -----END OPENSSH PRIVATE KEY-----
+      host_ca_password: ""
+
+      # ssh_user_ca_key contains the contents of your encrypted SSH User CA key
+      user_ca_key: ""
+      # user_ca_key: |
+      #   -----BEGIN OPENSSH PRIVATE KEY-----
+      #   ...
+      #   -----END OPENSSH PRIVATE KEY-----
+      user_ca_password: ""
+
+
+# service contains configuration for the kubernetes service.
+service:
+  type: ClusterIP
+  port: 443
+  targetPort: 9000
+  nodePort: ""
+  annotations: {}
+  externalIPs: []
+
+# linkedca contains the token to configure step-ca using the linkedca mode.
+#
+# The linked ca token can be provided using the linkedca.token value or using a
+# reference to a secret.
+linkedca:
+  # the linked ca token.
+  token:
+  # Reference to a secret name and key.
+  secretKeyRef:
+    name:
+    key:
+
+# ca contains the certificate authority configuration.
+ca:
+  # name is new public key infrastructure (PKI) names.
+  name: DevOps-DB CA
+  # address is the HTTP listener address of step-certificates.
+  address: :9000
+  # dns is the comma separated dns names to use. Leave it empty to use the format:
+  # {include "step-certificates.fullname" .}.{ .Release.Namespace}.svc.cluster.local,127.0.0.1
+  dns: ca.devops-db.internal
+  # url is the http url where step-certificates will listen at. Leave it empty to use the format
+  # https://{{ include "step-certificates.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  url: https://ca.devops-db.internal
+  # password is the password used to encrypt the keys. Leave it empty to generate a random one.
+  password:
+  # provisioner contains the step-certificates provisioner configuration.
+  db:
+    # enabled defines if the database is enabled.
+    enabled: true
+    # persistent defines if a Persistent Volume Claim is used, if false and emptyDir will be used.
+    persistent: true
+    # storeageClass is Persistent Volume Storage Class
+    # If defined, storageClassName: <storageClass>.
+    # If set to "-", storageClassName: "", which disables dynamic provisioning.
+    # If undefined or set to null, no storageClassName spec is set, choosing the
+    # default provisioner (gp2 on AWS, standard on GKE, AWS & OpenStack).
+    storageClass:
+    ## Persistent Volume existing claim name
+    ## Requires ca.db.persistent: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim: ""
+    # accessModes defines the Persistent Volume Access Mode.
+    accessModes:
+    - ReadWriteOnce
+    # size is the Persistent Volume size.
+    size: 10Gi
+  # Whether to enable ssh support for step-ca
+  ssh:
+    enabled: false
+  # kms type to utilize
+  kms:
+    type: ""
+  # additional environment variables to set in the step-certificates container
+  env: []
+  bootstrap:
+    # Add script snippets here to be executed after the step ca init has been run
+    postInitHook: ""
+  # Use existing secret for ca-password
+  existingSecrets:
+    enabled: false
+  init:
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      runAsUser: 1000
+      capabilities:
+        drop: ["ALL"]
+      runAsNonRoot: true
+      # seccompProfile:
+      #   type: RuntimeDefault
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    runAsUser: 1000
+    # runAsRoot: 0 runs the ca as root instead of the step user. This is required in
+    # some storage provisioners.
+    # runAsUser: 0
+    capabilities:
+      drop: ["ALL"]
+      add: ["NET_BIND_SERVICE"]
+    runAsNonRoot: true
+    # seccompProfile:
+    #   type: RuntimeDefault
+
+# autocert is used to configure the autocert chart that depends on step-certificates.
+autocert:
+  enabled: false
+
+# ingress contains the configuration for an ingress controller.
+ingress:
+  enabled: true
+  ingressClassName: public
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+  hosts:
+    - host: ca.devops-db.internal
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - ca.devops-db.internal
+      secretName: step-ca-tls
+      
+# resources contains the CPU/memory resource requests/limits.
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# Configure extra volumes and volume mounts as YAML expressions.
+# And example that will mount an extra volume would be:
+# extraVolumes:
+# - name: custom-ca
+#   configMap:
+#     name: custom-ca-certs
+# extraVolumeMounts:
+# - name: custom-ca
+#   mountPath: /etc/ssl/certs/custom-ca.pem
+extraVolumes: []
+extraVolumeMounts: []
+
+## extraInitContainers:
+##   - name: do-something
+##     image: busybox
+##     command: ['do', 'something']
+##
+extraInitContainers: []
+
+## extraContainers:
+##   - name: do-something
+##     image: busybox
+##     command: ['do', 'something']
+##
+extraContainers: []
+
+## Configure additional entries for /etc/hosts.
+## hostAliases:
+##   - ip: 10.0.0.1
+##     hostnames:
+##       - host.domain.com
+hostAliases: []
+
+# shareProcessNamespace share a single process namespace between all of the
+# containers in a pod.
+shareProcessNamespace: false
+
+# nodeSelector contains the node labels for pod assignment.
+nodeSelector: {}
+
+# tolerations contains the toleration labels for pod assignment.
+tolerations: []
+
+# affinity contains the affinity settings for pod assignment.
+affinity: {}
+
+# create or use a service account for running the ca. Useful for oidc access to kms for example
+serviceaccount:
+  create: false
+  name: ""
+  labels: {}
+  annotations: {}
+
+# default SecurityContext for pods, can be altered for containers via containerSecurityContext
+podSecurityContext:
+  runAsUser: 1000
+  runAsNonRoot: true
+  runAsGroup: 1000
+  fsGroup: 1000
+  # seccompProfile:
+  #   type: RuntimeDefault
