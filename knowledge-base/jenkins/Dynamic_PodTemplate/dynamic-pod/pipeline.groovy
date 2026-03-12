@@ -21,7 +21,7 @@ pipeline {
                         def str_folder = "${env.WORKSPACE}/pipelines/python/log"
                         def str_folderCheckout = "/python-log"
                         obj_Utilities.CreateFolders(str_folder)
-                        obj_Utilities.SparseCheckout('git@gitlab.devops-db.internal:infrastructure/pipelines/tests.git',
+                        obj_Utilities.SparseCheckout('https://gitlab.devops-db.internal/infrastructure/pipelines/tests.git',
                                 'master',
                                 str_folderCheckout,
                                 'usr-service-jenkins',
@@ -37,3 +37,7 @@ pipeline {
         }
     }
 }
+
+
+
+
