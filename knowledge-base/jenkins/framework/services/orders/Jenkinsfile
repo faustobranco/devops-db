@@ -1,0 +1,47 @@
+@Library('devopsdb-global-lib') _
+
+pipeline {
+
+    agent {
+        kubernetes {
+            yaml GeneratePodTemplate('1234-ABCD', 'registry.devops-db.internal:5000/img-jenkins-devopsdb:2.0')
+            retries 2
+        }
+    }
+
+
+    parameters {
+        choice(
+            name: "ENVIRONMENT",
+            choices: ["dev","stage","prod"],
+            description: "Deployment environment"
+        )
+    }
+
+    stages {
+
+        stage("Run Pipeline") {
+
+            steps {
+                script {
+
+                    def pipelineFramework = load "framework/pipelineFramework.groovy"
+
+                    pipelineFramework.run(this, [ 
+                        service: "orders",
+                        deployEnvironment: params.ENVIRONMENT,
+                        stages: [
+                            [stage: "build_image"],
+                            [stage: "lint"],   
+                            [stage: "deploy"]          
+                         ]                                                                     
+                    ])
+
+                }
+            }
+
+        }
+
+    }
+
+}

@@ -1,0 +1,109 @@
+@Library('devopsdb-global-lib') _
+import devopsdb.utilities.Utilities
+def obj_Utilities = new Utilities(this)                        
+
+def projectScript = """
+def items = [
+    "kubernetes",
+    "vault",
+    "gitlab"
+]
+
+return items
+"""
+
+def versionScript = """
+def versions = [
+    "kubernetes": ["3.11.1", "3.11.0", "3.10.5"],
+    "vault": ["2.5.0", "2.4.1", "2.4.0"],
+    "gitlab": ["1.8.2", "1.8.1"]
+]
+
+if (!PROJECT) {
+    return ["select project first"]
+}
+
+return versions[PROJECT]
+"""
+
+properties([
+    parameters([
+
+        [
+            $class: 'CascadeChoiceParameter',
+            choiceType: 'PT_SINGLE_SELECT',
+            name: 'PROJECT',
+            description: 'Select project',
+            script: [
+                $class: 'GroovyScript',
+                script: [
+                    $class: 'SecureGroovyScript',
+                    script: projectScript,
+                    sandbox: false
+                ]
+            ]
+        ],
+
+        [
+            $class: 'CascadeChoiceParameter',
+            choiceType: 'PT_SINGLE_SELECT',
+            name: 'APPLICATION_VERSION',
+            description: 'Select version',
+            referencedParameters: 'PROJECT',
+            script: [
+                $class: 'GroovyScript',
+                script: [
+                    $class: 'SecureGroovyScript',
+                    script: versionScript,
+                    sandbox: false
+                ]
+            ]
+        ],
+
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['test','stage','prod'],
+            description: 'Environment'
+        )
+
+    ])
+])
+
+pipeline {
+    agent {
+        kubernetes {
+            yaml GeneratePodTemplate('1234-ABCD', 'registry.devops-db.internal:5000/img-jenkins-devopsdb:2.0')
+            retries 2
+        }
+    }
+
+    stages {
+        stage("Starting Inventory Pipeline") {
+            steps {
+                script {
+                    def pipelineFramework = load "framework/pipelineFramework.groovy"
+                    pipelineFramework.run(this, [ 
+                        version: "",
+                        PROJECT: params.PROJECT,
+                        APPLICATION_VERSION: params.APPLICATION_VERSION,
+                        ENVIRONMENT: params.ENVIRONMENT,                        
+                        stages: [
+                            [stage: "configure", service: "devops", str_folder: "/resources/pip", container: "container-1"],
+                            [
+                                [stage: "build_image", service: "api", node: "docker"],
+                                [stage: "build_image", service: "worker", node: "docker"],
+                                [stage: "build_image", service: "scheduler", node: "docker"]
+                            ],
+                            [stage: "test", service: "devops", container: "container-1"],
+                            [
+                                [stage: "deploy", service: "api", container: "container-1"],
+                                [stage: "deploy", service: "worker", container: "container-1"]
+                            ]
+                        ]
+                    ])                    
+                }
+            }
+        }
+    }
+}
+
