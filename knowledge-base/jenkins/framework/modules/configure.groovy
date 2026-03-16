@@ -16,10 +16,10 @@ def run(Map config) {
 
         def str_folder = "${pipeline.env.WORKSPACE}${config.str_folder}"
 
-        //config.obj_Utilities.CreateFolders(str_folder)
+        config.obj_Utilities.CreateFolders(str_folder)
 
         pipeline.sh """
-            ls -R "${pipeline.env.WORKSPACE}"
+            date >> ${str_folder}\\example.txt
         """
     }
 

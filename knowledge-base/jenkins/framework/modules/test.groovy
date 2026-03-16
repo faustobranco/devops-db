@@ -13,5 +13,10 @@ def run(Map config) {
         ls -R "${pipeline.env.WORKSPACE}"
     """
 
+    def str_folder = "${pipeline.env.WORKSPACE}${config.str_folder}"
+
+    pipeline.sh """
+        cat ${str_folder}\\example.txt
+    """
 }
 return this

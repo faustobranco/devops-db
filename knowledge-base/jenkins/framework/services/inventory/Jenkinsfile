@@ -94,7 +94,7 @@ pipeline {
                                 [stage: "build_image", service: "worker", node: "docker"],
                                 [stage: "build_image", service: "scheduler", node: "docker"]
                             ],
-                            [stage: "test", service: "devops", container: "container-1"],
+                            [stage: "test", service: "devops", str_folder: "/resources/pip", container: "container-1"],
                             [
                                 [stage: "deploy", service: "api", container: "container-1"],
                                 [stage: "deploy", service: "worker", container: "container-1"]

@@ -1,6 +1,5 @@
 @Library('devopsdb-global-lib') _
 import devopsdb.utilities.Utilities
-def obj_Utilities = new Utilities(this)
 
 def run(pipeline, Map config) {
 
@@ -15,6 +14,12 @@ def run(pipeline, Map config) {
 
     def modules = [:]
 
+    // CHECKOUT
+
+    pipeline.stage("Checkout") {
+        pipeline.checkout pipeline.scm
+    }
+
     // LOAD MODULES
 
     def files = pipeline.sh(
@@ -25,13 +30,7 @@ def run(pipeline, Map config) {
     files.each { file ->
         def moduleName = file.tokenize("/").last().replace(".groovy","")
         modules[moduleName] = load file
-    }
-
-    // CHECKOUT
-
-    pipeline.stage("Checkout") {
-        pipeline.checkout pipeline.scm
-    }
+    }    
 
     // EXECUTOR
 
@@ -102,7 +101,7 @@ def run(pipeline, Map config) {
 
             }
 
-            pipeline.stage("Parallel") {
+            pipeline.stage("Framework Parallel Stages") {
                 pipeline.parallel parallelStages
             }
 
