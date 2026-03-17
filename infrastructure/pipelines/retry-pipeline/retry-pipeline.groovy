@@ -5,7 +5,6 @@ def default_baseDelaySeconds = 20
 
 properties([
     parameters([
-        string(name: 'RETRY_COUNT', defaultValue: '0'),
         string(name: 'ENV', defaultValue: 'dev'),
         booleanParam(name: 'RUN_TESTS', defaultValue: true),
         choice(name: 'REGION', choices: ['eu-central-1', 'eu-west-1', 'eu-north-1']),
