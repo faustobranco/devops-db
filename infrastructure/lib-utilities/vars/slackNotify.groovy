@@ -10,14 +10,20 @@ def call(Map config) {
     def payload = renderTemplate(template, data)
 
     // Send to Slack
-    sh(
+    def status = sh(
         script: """
-            curl -s -X POST -H 'Content-type: application/json' \
+            set +x
+            curl -s -o /dev/null -w "%{http_code}" \
+            -X POST -H 'Content-type: application/json' \
             --data '${payload}' \
             ${slackWebhookURL}
         """,
-        label: "Send Slack notification"
-    )
+        returnStdout: true
+    ).trim()
+
+    if (status != "200") {
+        echo "Slack notification failed with HTTP status: ${status}"
+    }
 }
 
 def renderTemplate(String template, Map data) {
