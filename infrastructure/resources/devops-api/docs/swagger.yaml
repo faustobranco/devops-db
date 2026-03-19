@@ -1,0 +1,153 @@
+info:
+  contact: {}
+paths:
+  /blueprints/environments:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+      summary: Get environments
+      tags:
+      - blueprints
+  /blueprints/platforms:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+      summary: Get platforms
+      tags:
+      - blueprints
+  /blueprints/services:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+      summary: Get services
+      tags:
+      - blueprints
+  /databases:
+    get:
+      description: List databases for a service and environment
+      parameters:
+      - description: Service name
+        in: query
+        name: service
+        required: true
+        type: string
+      - description: Environment
+        in: query
+        name: env
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get databases
+      tags:
+      - databases
+  /health:
+    get:
+      description: Check if API is running
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Health check
+      tags:
+      - health
+  /schemas:
+    get:
+      description: List schemas for a database
+      parameters:
+      - description: Service name
+        in: query
+        name: service
+        required: true
+        type: string
+      - description: Environment
+        in: query
+        name: env
+        required: true
+        type: string
+      - description: Database name
+        in: query
+        name: db
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get schemas
+      tags:
+      - schemas
+  /tags:
+    get:
+      description: Get semver tags from a GitLab repository
+      parameters:
+      - description: Repository path (e.g. services/reporting)
+        in: query
+        name: repo
+        required: true
+        type: string
+      - description: Sort order (date|version)
+        in: query
+        name: sort
+        type: string
+      - description: Limit number of results
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Invalid parameters
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            type: string
+      summary: Get repository tags
+      tags:
+      - tags
+swagger: "2.0"
