@@ -21,6 +21,12 @@ type APIResponse struct {
 	Error  string   `json:"error,omitempty"`
 }
 
+type VersionResponse struct {
+	Version string   `json:"version"`
+	Data    []string `json:"data,omitempty"`
+	Error   string   `json:"error,omitempty"`
+}
+
 type GitLabItem struct {
 	Name string `json:"name"`
 	Type string `json:"type"`

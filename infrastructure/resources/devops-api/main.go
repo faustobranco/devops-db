@@ -10,7 +10,7 @@ import (
 
 	_ "devops-api/docs"
 
-	"github.com/swaggo/http-swagger"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 var db *sql.DB
@@ -28,6 +28,19 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, APIResponse{Status: "ok"})
 }
 
+// @Summary Version check
+// @Description Show APIs version (semver)
+// @Tags version
+// @Produce json
+// @Success 200 {object} map[string]string
+// @Router /version [get]
+func versionHandler(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+
+	respondJSON(w, VersionResponse{Version: os.Getenv("DEVOPSAPI_VERSION")})
+}
+
 func main() {
 
 	http.HandleFunc("/health", healthHandler)
@@ -40,6 +53,7 @@ func main() {
 	http.HandleFunc("/blueprints/services", servicesHandler)
 
 	http.HandleFunc("/tags", tagsHandler)
+	http.HandleFunc("/version", versionHandler)
 
 	http.Handle("/swagger/", httpSwagger.WrapHandler)
 
