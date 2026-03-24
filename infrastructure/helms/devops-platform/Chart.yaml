@@ -1,0 +1,18 @@
+apiVersion: v2
+name: devops-platform
+description: DevOps Platform - multi-service deployment
+type: application
+version: 1.0.0
+
+dependencies:
+  - name: devops-api
+    version: 1.0.4
+    repository: https://nexus.devops-db.internal/repository/helm-devops-db/
+
+  - name: iplocation-api
+    version: 1.0.5
+    repository: https://nexus.devops-db.internal/repository/helm-devops-db/
+
+  - name: totp-api
+    version: 1.0.6
+    repository: https://nexus.devops-db.internal/repository/helm-devops-db/

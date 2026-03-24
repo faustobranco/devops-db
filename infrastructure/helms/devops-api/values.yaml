@@ -1,0 +1,32 @@
+replicaCount: 1
+image:
+  repository: nexus.devops-db.internal/devops_images/devops-api
+  pullPolicy: IfNotPresent
+  tag: "1.1.0"
+imagePullSecrets:
+  - name: nexus-registry
+
+autoscaling:
+  enabled: false
+
+service:
+  type: ClusterIP
+  port: 80
+  internalPort: 8080
+
+env:
+  GITLAB_URL: https://gitlab.devops-db.internal
+
+ingress:
+  enabled: false
+
+gateway:
+  enabled: true
+  name: devops-gateway
+  namespace: devops-api
+  host: devops-api.devops-db.internal
+
+devopsApi:
+  GITLAB_TOKEN: Z2xwYXQtdWN0WEhTcDN6cW5MQUsxQmJSMXRhRzg2TVFwMU9qWUguMDEuMHcxaXJydWly
+  POSTGRES_PASSWORD: MTIzNHF3ZXI=
+  POSTGRES_USER: ZGV2b3BzX2FwaQ==

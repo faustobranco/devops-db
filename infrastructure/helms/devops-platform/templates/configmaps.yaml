@@ -1,0 +1,14 @@
+{{- if .Values.global.configMaps }}
+{{- range $name, $config := .Values.global.configMaps }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-%s-%s" $.Release.Name $.Chart.Name $name }}
+  namespace: {{ $.Release.Namespace }}
+data:
+{{- range $key, $value := $config.data }}
+  {{ $key }}: {{ $value | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
