@@ -1,0 +1,77 @@
+crds:
+  install: true
+
+global:
+  domain: argocd.devops-db.internal
+
+configs:
+  params:
+    server.insecure: true
+  cm:
+    url: https://argocd.devops-db.internal
+    dex.config: |
+      connectors:
+        - type: ldap
+          name: LDAP
+          id: ldap
+          config:
+            host: ldap.devops-db.info:389
+            insecureNoSSL: true
+
+            bindDN: cn=readonly-bind-dn,ou=ServiceGroups,dc=ldap,dc=devops-db,dc=info
+            bindPW: 1234qwer
+
+            userSearch:
+              baseDN: dc=ldap,dc=devops-db,dc=info
+              filter: "(objectClass=person)"
+              username: uid
+              idAttr: uid
+              emailAttr: mail
+              nameAttr: cn
+
+            groupSearch:
+              baseDN: ou=SecurityGroups,dc=ldap,dc=devops-db,dc=info
+              filter: "(objectClass=groupOfNames)"
+              userMatchers:
+                - userAttr: DN
+                  groupAttr: member
+              nameAttr: cn
+  rbac:
+    policy.csv: |
+      g, ArgoAdminsGroup, role:admin
+      g, ArgoDevsGroup, role:readonly
+    policy.default: role:readonly              
+
+server:
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: step-ca-issuer
+    tls:
+      - hosts:
+          - argocd.devops-db.internal
+        secretName: argocd-tls      
+    ingressClassName: nginx
+    hosts:
+      - argocd.devops-db.internal
+    paths:
+      - /
+    pathType: Prefix
+  service:
+    type: ClusterIP
+
+controller:
+  replicas: 1
+
+repoServer:
+  replicas: 1
+
+applicationSet:
+  enabled: true
+
+redis:
+  enabled: true
+  master:
+    persistence:
+      enabled: true
+      size: 10Gi

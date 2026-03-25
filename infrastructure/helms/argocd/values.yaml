@@ -8,11 +8,17 @@ configs:
   params:
     server.insecure: true
   cm:
-    url: http://argocd.devops-db.internal
+    url: https://argocd.devops-db.internal
 
 server:
   ingress:
     enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: step-ca-issuer
+    tls:
+      - hosts:
+          - argocd.devops-db.internal
+        secretName: argocd-tls      
     ingressClassName: nginx
     hosts:
       - argocd.devops-db.internal
