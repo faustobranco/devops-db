@@ -1,0 +1,21 @@
+ingress:
+  enabled: true
+  host: totp-api.devops-db.internal
+
+replicaCount: 1
+image:
+  repository: nexus.devops-db.internal/devops_images/totp-validator
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: nexus-registry
+
+autoscaling:
+  enabled: false
+
+service:
+  type: ClusterIP
+  port: 80
+  internalPort: 8080
+
+

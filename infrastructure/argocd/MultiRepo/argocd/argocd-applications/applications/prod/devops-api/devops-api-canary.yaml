@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devops-api-canary
+  namespace: argocd
+spec:
+  project: devops-api
+
+  sources:
+    # Chart (Nexus)
+    - repoURL: https://nexus.devops-db.internal/repository/helm-devops-db/
+      chart: devops-api
+      targetRevision: 1.0.5
+      helm:
+        valueFiles:
+          - $repo-app-values/envs/prod/values-canary.yaml
+
+    # Values (GitLab)
+    - repoURL: https://gitlab.devops-db.internal/infrastructure/argocd/applications/devops-api.git
+      targetRevision: HEAD
+      ref: repo-app-values
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: devops-api
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

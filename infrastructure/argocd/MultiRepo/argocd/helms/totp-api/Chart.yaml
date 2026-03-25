@@ -1,0 +1,6 @@
+apiVersion: v2
+name: totp-api
+description: A Helm chart for TOTP API Validator
+type: application
+version: 1.0.7
+appVersion: "1.0.0"

@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: totp-api-stable
+  namespace: argocd
+spec:
+  project: totp-api
+
+  sources:
+    # Chart no Nexus
+    - repoURL: https://nexus.devops-db.internal/repository/helm-devops-db/
+      chart: totp-api
+      targetRevision: 1.0.7
+      helm:
+        valueFiles:
+          - $repo-app-values/envs/prod/values-stable.yaml
+
+    # Repo Git (values)
+    - repoURL: https://gitlab.devops-db.internal/infrastructure/argocd/applications/totp-api.git
+      targetRevision: HEAD
+      ref: repo-app-values
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: devops-api
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

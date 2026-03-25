@@ -1,0 +1,28 @@
+role: canary
+
+traffic:
+  stable: 50
+  canary: 50
+
+ingress:
+  enabled: true
+  host: totp-api.devops-db.internal
+
+
+replicaCount: 1
+image:
+  repository: nexus.devops-db.internal/devops_images/totp-validator
+  pullPolicy: IfNotPresent
+  tag: "1.0.0"
+ 
+autoscaling:
+  enabled: false
+
+service:
+  type: ClusterIP
+  port: 80
+  internalPort: 8080
+
+env:
+  TOTPVALIDATOR_VERSION: v1.0.0-canary
+
