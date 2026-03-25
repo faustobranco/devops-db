@@ -1,0 +1,39 @@
+crds:
+  install: true
+
+global:
+  domain: argocd.devops-db.internal
+
+configs:
+  params:
+    server.insecure: true
+  cm:
+    url: http://argocd.devops-db.internal
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+      - argocd.devops-db.internal
+    paths:
+      - /
+    pathType: Prefix
+  service:
+    type: ClusterIP
+
+controller:
+  replicas: 1
+
+repoServer:
+  replicas: 1
+
+applicationSet:
+  enabled: true
+
+redis:
+  enabled: true
+  master:
+    persistence:
+      enabled: true
+      size: 10Gi
