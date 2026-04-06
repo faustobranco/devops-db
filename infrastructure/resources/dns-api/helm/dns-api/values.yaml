@@ -1,0 +1,63 @@
+ingress:
+  enabled: true
+  host: dns-api.devops-db.internal
+  annotations:
+    cert-manager.io/cluster-issuer: "step-ca-issuer"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  tls:
+    - secretName: dns-api-tls-cert
+      hosts:
+        - dns-api.devops-db.internal
+
+replicaCount: 1
+image:
+  repository: nexus.devops-db.internal/docker-devops-images-public/dns-api
+  pullPolicy: IfNotPresent
+  tag: "1.0.2"
+
+autoscaling:
+  enabled: false
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 15
+  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 3
+  successThreshold: 1
+  failureThreshold: 3
+
+secrets:
+  dns-api:
+    type: Opaque
+    data:
+      TSIG_KEY_NAME: "ZGV2b3BzLWtleQ=="
+      TSIG_SECRET: "dmZ3UitmcjlJVEVkTHNuSllqQVptcVgrZGhjSlFVWFpRV1gzVG1MY3hFaz0="
+      PASETO_SECRET: "OThlNjI2MGNmZWY4MWZlN2E3YzAxMWFjNGU0NjZlZWY0YjhiZGNmYTRmNTkzODIxMjE0NDI2MzhkZjA2NTNhMA=="
+
+configMaps:
+  dns-config:
+    data:
+      DNS_SERVER: "172.21.5.155"
+      TTL: 300
+service:
+  type: ClusterIP
+  port: 80
+  internalPort: 8080
+
+env:
+  DNS_API_VERSION: v1.0.0
+
+serviceAccount:
+  create: false
+  name: ""
