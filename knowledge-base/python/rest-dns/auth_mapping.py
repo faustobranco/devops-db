@@ -14,4 +14,10 @@ def extract_zones(groups):
         if "devops-db-local-admin" in g:
             zones.setdefault("devops-db.local", []).append("write")
 
+        if "dhcp-read" in g:
+            zones.setdefault("dhcp", []).append("read")
+
+        if "dhcp-admin" in g:
+            zones.setdefault("dhcp", []).append("write")
+
     return zones

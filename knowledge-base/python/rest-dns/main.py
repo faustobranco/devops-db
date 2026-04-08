@@ -15,6 +15,7 @@ from token_lib import paseto
 import dns_service
 import dns_validation
 from dns_validation import APIException, DNSValidationException, DNSAuthException
+import kea_service
 import config
 
 security = HTTPBearer()
@@ -31,6 +32,13 @@ class DNSRecordRequest(BaseModel):
     type: Literal["A", "CNAME"] = Field(..., example="A")
     value: str = Field(..., example="172.21.5.10")
     ttl: Optional[int] = Field(default=300, example=300)
+
+
+class DHCPReservationRequest(BaseModel):
+    mac_address: str = Field(..., example="aa:bb:cc:dd:ee:ff", description="MAC address in colon-separated format")
+    ip_address: str = Field(..., example="192.168.1.100", description="IPv4 address to reserve")
+    hostname: str = Field(..., example="myhost", description="Hostname for the reservation")
+    subnet_id: Optional[int] = Field(default=1, example=1, description="Kea subnet ID")
 
 
 class DNSLoginException(APIException):
@@ -168,7 +176,6 @@ def get_token_payload(
     token = credentials.credentials
     return auth.verify_token(token)
 
-
 @app.post(
     "/{domain}/insert",
     summary="Create DNS record",
@@ -284,9 +291,121 @@ async def list_records_endpoint(
     description="Returns current API version"
 )
 def version():
-    return {"version": "1.0.0"}
+    return {"version": config.DNS_API_VERSION}
 
-@app.get("/login", response_class=HTMLResponse)
+@app.get("/health", summary="Health check")
+def healthcheck():
+    return {"status": "ok"}
+
+@app.get(
+    "/domains",
+    summary="List accessible domains",
+    description="Returns the list of domains the authenticated user has access to, with their permissions"
+)
+def list_domains(payload=Depends(get_token_payload)):
+    zones = payload.get("zones", {})
+    return {
+        "domains": [
+            {"domain": domain, "permissions": perms}
+            for domain, perms in zones.items()
+        ]
+    }
+
+@app.get(
+    "/dhcp/reservations",
+    summary="List DHCP reservations",
+    description="Returns all static DHCP reservations from the Kea database. Requires `dhcp` domain with `read` permission.",
+    responses={
+        200: {"description": "List of static reservations"},
+        401: {"description": "Unauthorized"},
+        403: {"description": "Forbidden"},
+        503: {"description": "Database unavailable"}
+    }
+)
+def dhcp_list_reservations(payload=Depends(get_token_payload)):
+    auth.check_permission(payload, "dhcp", "read")
+    try:
+        return kea_service.list_reservations()
+    except ConnectionError as e:
+        raise FastAPIHTTPException(status_code=503, detail=str(e))
+
+
+@app.get(
+    "/dhcp/leases",
+    summary="List DHCP leases",
+    description="Returns all active DHCP leases from the Kea database. Requires `dhcp` domain with `read` permission.",
+    responses={
+        200: {"description": "List of active leases"},
+        401: {"description": "Unauthorized"},
+        403: {"description": "Forbidden"},
+        503: {"description": "Database unavailable"}
+    }
+)
+def dhcp_list_leases(payload=Depends(get_token_payload)):
+    auth.check_permission(payload, "dhcp", "read")
+    try:
+        return kea_service.list_leases()
+    except ConnectionError as e:
+        raise FastAPIHTTPException(status_code=503, detail=str(e))
+
+
+@app.post(
+    "/dhcp/reservations",
+    summary="Add DHCP reservation",
+    description="Creates a static DHCP reservation in the Kea database. Requires `dhcp` domain with `write` permission.",
+    responses={
+        200: {"description": "Reservation created successfully"},
+        401: {"description": "Unauthorized"},
+        403: {"description": "Forbidden"},
+        503: {"description": "Database unavailable"}
+    }
+)
+def dhcp_add_reservation(body: DHCPReservationRequest, payload=Depends(get_token_payload)):
+    auth.check_permission(payload, "dhcp", "write")
+    try:
+        kea_service.add_reservation(body.mac_address, body.ip_address, body.hostname, body.subnet_id)
+        return {"status": "ok", "message": f"Reservation added for {body.hostname}"}
+    except ConnectionError as e:
+        raise FastAPIHTTPException(status_code=503, detail=str(e))
+
+
+@app.delete(
+    "/dhcp/reservations",
+    summary="Delete DHCP reservation",
+    description="""
+Deletes a static DHCP reservation from the Kea database.
+
+Provide either `mac` or `hostname` to identify the reservation:
+- `mac` — MAC address in colon-separated format (e.g. `aa:bb:cc:dd:ee:ff`)
+- `hostname` — exact hostname of the reservation
+
+Requires `dhcp` domain with `write` permission.
+""",
+    responses={
+        200: {"description": "Reservation deleted"},
+        400: {"description": "Neither mac nor hostname provided"},
+        401: {"description": "Unauthorized"},
+        403: {"description": "Forbidden"},
+        503: {"description": "Database unavailable"}
+    }
+)
+def dhcp_delete_reservation(
+    payload=Depends(get_token_payload),
+    mac: Optional[str] = None,
+    hostname: Optional[str] = None
+):
+    auth.check_permission(payload, "dhcp", "write")
+    if not mac and not hostname:
+        raise FastAPIHTTPException(status_code=400, detail="Provide 'mac' or 'hostname' query parameter")
+    try:
+        identifier = mac if mac else hostname
+        deleted = kea_service.delete_reservation(identifier, use_mac=bool(mac))
+        return {"status": "ok", "deleted": deleted, "identifier": identifier}
+    except ConnectionError as e:
+        raise FastAPIHTTPException(status_code=503, detail=str(e))
+
+
+@app.get("/login", response_class=HTMLResponse, include_in_schema=False)
 def login_form():
     return """
     <html>
@@ -373,7 +492,7 @@ def login_form():
     </html>
     """
 
-@app.post("/login")
+@app.post("/login", include_in_schema=False)
 def login_step1(
     username: str = Form(...),
     password: str = Form(...)
@@ -401,7 +520,7 @@ def login_step1(
     ))
 
 
-@app.post("/login/totp")
+@app.post("/login/totp", include_in_schema=False)
 def login_step2(
     session_id: str = Form(...),
     totp_code: str = Form(..., alias="totp")

@@ -1,8 +1,19 @@
-PASETO_SECRET = "98e6260cfef81fe7a7c011ac4e466eef4b8bdcfa4f59382121442638df0653a0"
+import os
 
-TSIG_KEY_NAME = "devops-key"
-TSIG_SECRET = "vfwR+fr9ITEdLsnJYjAZmqX+dhcJQUXZQWX3TmLcxEk="
+PASETO_SECRET = os.getenv("PASETO_SECRET")
 
-DNS_SERVER = "172.21.5.155"
+TSIG_KEY_NAME = os.getenv("TSIG_KEY_NAME")
+TSIG_SECRET = os.getenv("TSIG_SECRET")
 
-TTL = 300
+DNS_SERVER = os.getenv("DNS_SERVER")
+
+TTL = int(os.getenv("TTL"))
+
+DNS_API_VERSION = os.getenv("DNS_API_VERSION")
+
+# Kea DHCP database
+KEA_DB_HOST = os.getenv("KEA_DB_HOST", "localhost")
+KEA_DB_NAME = os.getenv("KEA_DB_NAME", "kea_db")
+KEA_DB_USER = os.getenv("KEA_DB_USER", "kea")
+KEA_DB_PASSWORD = os.getenv("KEA_DB_PASSWORD", "")
+KEA_DB_PORT = int(os.getenv("KEA_DB_PORT", "5432"))

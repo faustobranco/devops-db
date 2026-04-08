@@ -1,0 +1,12 @@
+--extra-index-url https://nexus.devops-db.internal/repository/pypi-public/simple
+
+fastapi
+uvicorn[standard]
+pydantic
+ldap3
+dnspython
+keyring
+python-multipart
+token-lib
+psycopg2-binary
+
