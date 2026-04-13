@@ -1,0 +1,16 @@
+# ---- builder ----
+FROM golang:1.22-alpine AS builder
+
+WORKDIR /build
+
+COPY . .
+RUN CGO_ENABLED=0 go build -o app
+
+# ---- runtime ----
+FROM nexus.devops-db.internal/docker-base-images-public/go-minimal-debian:1.22-1.0.0
+
+COPY --from=builder /build/app /app/app
+
+USER app
+
+ENTRYPOINT ["/app/app"]

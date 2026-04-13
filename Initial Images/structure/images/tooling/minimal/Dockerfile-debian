@@ -1,0 +1,14 @@
+FROM nexus.devops-db.internal/docker-base-images-public/base-debian:1.0.0
+
+USER root
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+    curl \
+    netcat-openbsd \
+    tini \
+ && rm -rf /var/lib/apt/lists/*
+
+USER app
+
+ENTRYPOINT ["/usr/bin/tini", "--"]

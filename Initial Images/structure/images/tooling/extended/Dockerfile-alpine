@@ -1,0 +1,23 @@
+FROM nexus.devops-db.internal/docker-base-images-public/base-debian:1.0.0
+
+USER root
+
+ARG VAULT_VERSION=1.15.5
+
+RUN apk add --no-cache \
+    curl \
+    git \
+    bash \
+    netcat-openbsd \
+    busybox-extras \
+    tini \
+    wget \
+    unzip \
+ && wget -q https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip \
+ && unzip vault_${VAULT_VERSION}_linux_amd64.zip \
+ && mv vault /usr/local/bin/vault \
+ && chmod +x /usr/local/bin/vault
+
+USER app
+
+ENTRYPOINT ["/sbin/tini", "--"]

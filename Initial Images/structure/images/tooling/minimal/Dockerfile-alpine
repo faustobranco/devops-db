@@ -1,0 +1,12 @@
+FROM nexus.devops-db.internal/docker-base-images-public/base-debian:1.0.0
+
+USER root
+
+RUN apk add --no-cache \
+    curl \
+    netcat-openbsd \
+    tini
+
+USER app
+
+ENTRYPOINT ["/sbin/tini", "--"]
