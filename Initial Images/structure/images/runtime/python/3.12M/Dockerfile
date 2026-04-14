@@ -11,6 +11,7 @@ FROM nexus.devops-db.internal/docker-base-images-public/tooling-minimal-debian:1
 COPY --from=builder /venv /venv
 COPY --from=builder /usr/local/bin/python /usr/local/bin/python
 COPY --from=builder /usr/local/lib/python3.12 /usr/local/lib/python3.12
+COPY --from=builder /usr/local/lib/libpython3.12.so.1.0 /usr/local/lib/
 
 ENV PATH="/venv/bin:$PATH"
 
