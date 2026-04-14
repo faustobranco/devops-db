@@ -1,22 +1,15 @@
-# ---- builder ----
-FROM python:3.12-slim AS builder
-
-WORKDIR /build
-
-RUN python -m venv /venv
-
-# ---- runtime ----
 FROM nexus.devops-db.internal/docker-base-images-public/tooling-minimal-debian:1.0.0
 
-COPY --from=builder /venv /venv
-COPY --from=builder /usr/local/bin/python /usr/local/bin/python
-COPY --from=builder /usr/local/lib/python3.12 /usr/local/lib/python3.12
-COPY --from=builder /usr/local/lib/libpython3.12.so.1.0 /usr/local/lib/
+USER root
 
-ENV PATH="/venv/bin:$PATH"
-
-WORKDIR /app
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-venv \
+    python3-pip \
+ && rm -rf /var/lib/apt/lists/*
 
 USER app
 
-CMD ["python"]
+WORKDIR /app
+
+CMD ["python3"]
